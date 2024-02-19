@@ -1,0 +1,18 @@
+BecomeLizard()			werelizard from wik mod
+BecomeDeerclops()	
+BecomeBearger(shallwalk)
+	BeargerSpeed(speed)	0, 1, or 2 to change walk speed
+BecomeMooseGoose()		other variations like moose or goose work, too
+BecomeBigFoot(altsound)
+	BigFootSound()		toggle vanilla stomp sound or bearger slam sound
+
+
+
+personal notes...
+
+Manual Quicksave F4
+
+Get entity name under cursor
+print(tostring(c_select()))
+
+
