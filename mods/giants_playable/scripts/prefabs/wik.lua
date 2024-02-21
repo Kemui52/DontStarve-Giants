@@ -5,15 +5,17 @@ function GlobalDestroyings(inst, pt, ents, heading_angle)
     for k,v in pairs(ents) do
        if v then
 		if v.components.workable and (v.components.workable.action ~= ACTIONS.NET or (v:HasTag("firefly") and not v:HasTag("NOCLICK"))) and v.components.workable:CanBeWorked() then
-			if v:HasTag("squishyworkable") then
+--[[			if v:HasTag("squishyworkable") then
 				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
 				SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())
-			elseif v:HasTag("firefly") then
+			else--]]
+			if v:HasTag("firefly") then
 				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
 			elseif v:HasTag("spiderhole") then
 				--v.components.workable:SetWorkLeft(1)
-				v:GoToBrokenState(v)
-				v:workcallback(v, inst, 0)
+				--GoToBrokenState(v)
+				--workcallback(v, inst, 0)
+				v.components.workable:SetOnFinishCallback(v.fnCrushed)
 			else
 				SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())
 			end
@@ -32,6 +34,8 @@ function GlobalDestroyings(inst, pt, ents, heading_angle)
 			elseif v:HasTag("tree") then
 				inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
 				inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+			elseif v:HasTag("rocky") then
+				inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
 			elseif v:HasTag("butterfly") then
 				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
 				inst:Remove()

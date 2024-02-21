@@ -682,7 +682,7 @@ local function wikflowercave(inst)
 		inst:Remove()
 		inst.components.lootdropper:SpawnLootPrefab("lightbulb")
 	end
-	inst:AddComponent("lootdropper")
+	--inst:AddComponent("lootdropper")
 	inst:AddComponent("workable")
     inst.components.workable:SetOnFinishCallback(fnCrushed)
     inst.components.workable:SetWorkLeft(1)
@@ -693,7 +693,7 @@ local function wikflowercavedouble(inst)
 		inst.components.lootdropper:SpawnLootPrefab("lightbulb")
 		inst.components.lootdropper:SpawnLootPrefab("lightbulb")
 	end
-	inst:AddComponent("lootdropper")
+	--inst:AddComponent("lootdropper")
 	inst:AddComponent("workable")
     inst.components.workable:SetOnFinishCallback(fnCrushed)
     inst.components.workable:SetWorkLeft(1)
@@ -705,7 +705,7 @@ local function wikflowercavetriple(inst)
 		inst.components.lootdropper:SpawnLootPrefab("lightbulb")
 		inst.components.lootdropper:SpawnLootPrefab("lightbulb")
 	end
-	inst:AddComponent("lootdropper")
+	--inst:AddComponent("lootdropper")
 	inst:AddComponent("workable")
     inst.components.workable:SetOnFinishCallback(fnCrushed)
     inst.components.workable:SetWorkLeft(1)
@@ -751,11 +751,12 @@ local function wikcactus(inst)
 			inst.components.lootdropper:SpawnLootPrefab("cactus_meat")
 		end
 		--inst.components.lootdropper:SpawnLootPrefab("cactus_meat")
+		inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
 		inst:Remove()
 	end
 	inst:AddComponent("lootdropper")
 	inst:AddComponent("workable")
-	inst:AddTag("squishyworkable")
+	--inst:AddTag("squishyworkable")
     inst.components.workable:SetOnFinishCallback(fnCrushed)
     inst.components.workable:SetWorkLeft(1)
 end
@@ -911,7 +912,7 @@ local function wikslurtlehole(inst)
 	inst:AddTag("slurtlehole")
 end
 local function wikpillar_cave(inst)
-SetSharedLootTable( 'pillar_cave',
+GLOBAL.SetSharedLootTable( 'pillar_cave',
 {
     {'rocks',     	1.00},
     {'rocks',     	1.00},
@@ -925,6 +926,10 @@ SetSharedLootTable( 'pillar_cave',
 })
 	local function fnCrushed(inst, chopper)
 		inst.components.lootdropper:DropLoot(Point(inst.Transform:GetWorldPosition()))
+		if inst.SoundEmitter == nil then
+			inst.entity:AddSoundEmitter()
+		end
+		inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
 		inst:Remove()
 	end
 	inst:AddComponent("lootdropper")
@@ -935,6 +940,11 @@ SetSharedLootTable( 'pillar_cave',
 	--inst:AddTag("wikpillar")
 end
 local function wikspiderhole(inst)
+	inst.fnCrushed = function(inst, chopper)
+		inst.components.lootdropper:DropLoot(Point(inst.Transform:GetWorldPosition()))
+		inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+		inst:Remove()
+	end
 	inst:AddTag("spiderhole")
 end
 
