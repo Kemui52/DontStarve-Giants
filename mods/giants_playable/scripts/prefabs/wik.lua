@@ -1,6 +1,13 @@
 require "stategraphs/SGwik"
 require "stategraphs/SGwerelizard"
 
+local function localPlaySound(v, sound, skipcheck)
+	if not v.SoundEmitter and not skipcheck then
+		v.entity:AddSoundEmitter()
+	end
+	v.SoundEmitter:PlaySound(sound)
+end
+
 function GlobalDestroyings(inst, pt, ents, heading_angle)
     for k,v in pairs(ents) do
        if v then
@@ -10,12 +17,13 @@ function GlobalDestroyings(inst, pt, ents, heading_angle)
 				SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())
 			else--]]
 			if v:HasTag("firefly") then
-				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
+				localPlaySound(v, "dontstarve/wilson/hit_animal")
 			elseif v:HasTag("spiderhole") then
 				--v.components.workable:SetWorkLeft(1)
 				--GoToBrokenState(v)
 				--workcallback(v, inst, 0)
 				v.components.workable:SetOnFinishCallback(v.fnCrushed)
+				SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())
 			else
 				SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())
 			end
@@ -26,21 +34,22 @@ function GlobalDestroyings(inst, pt, ents, heading_angle)
 			end
 			v.components.health:Kill() --SetPercent(0)
 			if v:HasTag("chess") then
-				inst.SoundEmitter:PlaySound("dontstarve/common/destroy_metal")
+				localPlaySound(v, "dontstarve/common/destroy_metal")
 			elseif v:HasTag("ghost") or v:HasTag("shadowcreature") then
-				inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+				localPlaySound(v, "dontstarve/ghost/ghost_haunt")
 			elseif v:HasTag("houndmound") or v:HasTag("slurtlehole") then
-				inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+				localPlaySound(v, "dontstarve/common/destroy_stone")
 			elseif v:HasTag("tree") then
-				inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
-				inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+				localPlaySound(v, "dontstarve/wilson/use_axe_tree")
+				localPlaySound(v, "dontstarve/forest/treefall",true)
 			elseif v:HasTag("rocky") then
-				inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+				localPlaySound(v, "dontstarve/common/destroy_stone")
 			elseif v:HasTag("butterfly") then
-				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
-				inst:Remove()
+				localPlaySound(v, "dontstarve/wilson/hit_animal")
+				v.components.lootdropper:DropLoot(Point(v.Transform:GetWorldPosition()))
+				v:Remove(inst)
 			else
-				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
+				localPlaySound(v, "dontstarve/wilson/hit_animal")
 			end
         end
 	   end
@@ -1458,7 +1467,9 @@ print("Bearger WorkEntities ran. I wonder how?")
     inst.components.hunger:Pause()
     inst.components.sanity.ignore = true
 --Set waterproof since rain does nothing anyway. The only reason this works on the entity directly is because I patched it in modmain.
-	inst:AddComponent("waterproofer")
+	if softresolvefilepath("scripts/components/waterproofer.lua") then --vanilla compatibility
+		inst:AddComponent("waterproofer")
+	end
 --Just in case...
     inst.components.eater.strongstomach = true
     inst.components.eater.monsterimmune = true   
@@ -1554,7 +1565,9 @@ local inst = GetPlayer()
     inst.components.hunger:Pause()
     inst.components.sanity.ignore = true
 --Set waterproof since rain does nothing anyway. The only reason this works on the entity directly is because I patched it in modmain.
-	inst:AddComponent("waterproofer")
+	if softresolvefilepath("scripts/components/waterproofer.lua") then --vanilla compatibility
+		inst:AddComponent("waterproofer")
+	end
 --Just in case...
     inst.components.eater.strongstomach = true
     inst.components.eater.monsterimmune = true
@@ -1652,7 +1665,9 @@ local inst = GetPlayer()
     inst.components.hunger:Pause()
     inst.components.sanity.ignore = true
 --Set waterproof since rain does nothing anyway. The only reason this works on the entity directly is because I patched it in modmain.
-	inst:AddComponent("waterproofer")
+	if softresolvefilepath("scripts/components/waterproofer.lua") then --vanilla compatibility
+		inst:AddComponent("waterproofer")
+	end
 --Just in case...
     inst.components.eater.strongstomach = true
     inst.components.eater.monsterimmune = true

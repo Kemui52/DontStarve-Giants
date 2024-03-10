@@ -751,6 +751,9 @@ local function wikcactus(inst)
 			inst.components.lootdropper:SpawnLootPrefab("cactus_meat")
 		end
 		--inst.components.lootdropper:SpawnLootPrefab("cactus_meat")
+		if inst.SoundEmitter == nil then
+			inst.entity:AddSoundEmitter()
+		end
 		inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_animal")
 		inst:Remove()
 	end
@@ -917,9 +920,23 @@ GLOBAL.SetSharedLootTable( 'pillar_cave',
     {'rocks',     	1.00},
     {'rocks',     	1.00},
     {'rocks', 		1.00},
+    {'rocks',     	1.00},
+    {'rocks',     	1.00},
+    {'rocks', 		1.00},
+    {'rocks',     	1.00},
+    {'rocks',     	1.00},
+    {'rocks', 		1.00},
+    {'rocks', 		0.50},
+    {'rocks', 		0.50},
+    {'rocks', 		0.50},
     {'rocks', 		0.50},
     {'flint',      	1.00},
-    {'flint',		0.25},
+    {'flint',      	1.00},
+    {'flint',      	1.00},
+    {'flint',      	1.00},
+    {'flint',      	1.00},
+    {'flint',      	1.00},
+    {'flint',		0.75},
     {'flint',      	0.60},
     {'bluegem',     0.05},
     {'redgem',     	0.05},
@@ -934,6 +951,38 @@ GLOBAL.SetSharedLootTable( 'pillar_cave',
 	end
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetChanceLootTable('pillar_cave')
+	inst:AddComponent("workable")
+    inst.components.workable:SetOnFinishCallback(fnCrushed)
+    inst.components.workable:SetWorkLeft(1)
+	--inst:AddTag("wikpillar")
+end
+local function wikpillar_stalactite(inst)
+GLOBAL.SetSharedLootTable( 'pillar_stalactite',
+{
+    {'rocks',     	1.00},
+    {'rocks',     	1.00},
+    {'rocks', 		0.50},
+    {'rocks', 		0.50},
+    {'flint',      	1.00},
+    {'flint',		0.75},
+    {'flint',      	0.60},
+    {'bluegem',     0.05},
+    {'redgem',     	0.05},
+})
+	local function fnCrushed(inst, chopper)
+		inst.components.lootdropper:DropLoot(Point(inst.Transform:GetWorldPosition()))
+		if inst.SoundEmitter == nil then
+			inst.entity:AddSoundEmitter()
+		end
+		inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+		inst:Remove()
+	end
+	inst.entity:AddPhysics()
+    inst.Physics:SetMass(0) 
+    inst.Physics:SetCapsule(1.5,2)
+    inst.Physics:ClearCollisionMask()
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper:SetChanceLootTable('pillar_stalactite')
 	inst:AddComponent("workable")
     inst.components.workable:SetOnFinishCallback(fnCrushed)
     inst.components.workable:SetWorkLeft(1)
@@ -970,7 +1019,7 @@ AddPrefabPostInit("fireflies", wikfireflies)
 AddPrefabPostInit("slurtlehole", wikslurtlehole)
 AddPrefabPostInit("pillar_cave", wikpillar_cave)
 AddPrefabPostInit("pillar_algae", wikpillar_cave)
-AddPrefabPostInit("pillar_stalactite", wikpillar_cave)
+AddPrefabPostInit("pillar_stalactite", wikpillar_stalactite)
 --AddPrefabPostInit("pillar_ruins", wikpillar_cave)
 AddPrefabPostInit("spiderhole", wikspiderhole)
 
