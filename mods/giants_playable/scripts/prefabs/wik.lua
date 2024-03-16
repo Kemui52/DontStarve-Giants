@@ -1691,6 +1691,86 @@ function BigFootSound()
 	end
 end
 
+function BecomeTreeguard(kind)
+if kind == nil then kind = 0 end
+local inst = GetPlayer()
+--Set up transformation flags.
+    inst.lizard = true
+    inst:AddTag("beaver")
+--Define size of creature.
+    inst.Transform:SetScale(1.25, 1.25, 1.25, 1.25)
+--Move camera up for tall monster.
+	--TheCamera:SetOffset(Vector3(0,3,0))
+--Set map icon.
+	if softresolvefilepath("images/leif.tex") then
+		if kind <= 0 then
+			inst.entity:AddMiniMapEntity():SetIcon("leif.tex")
+		else
+			inst.entity:AddMiniMapEntity():SetIcon("leif_sparse.tex")
+		end
+	end
+--The actual transformation.
+	if kind <= 0 then
+		inst.AnimState:SetBuild("leif_build")
+	else
+		inst.AnimState:SetBuild("leif_lumpy_build")
+	end
+    inst.AnimState:SetBank("leif")
+    inst:SetStateGraph("SGleifPlayer")
+--Remove text.
+    inst.components.talker:IgnoreAll()
+--General speed.
+    inst.components.locomotor.walkspeed = 1.5
+--    inst.components.locomotor.runspeed = 3
+    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+--Remove collisions.
+	ChangeToGhostPhysics(inst)
+--Mouseover string and action overrides.
+    inst.ActionStringOverride = dcattackactionstring
+    inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
+    inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
+    inst.components.playeractionpicker.rightclickoverride = RightClickPicker
+--Blobby shadow size.
+    inst.DynamicShadow:SetSize(4, 1.5)
+--Generic combat stats.
+    inst.components.combat:SetDefaultDamage(1000)
+    inst.components.combat:SetAreaDamage(5, 1)
+    inst.components.combat:SetRange(4, 4)
+--Sets what you can click on and your effectiveness. Worker is always needed.
+    inst:AddComponent("worker")
+    --inst.components.worker:SetAction(ACTIONS.DIG, 1)
+	--inst.components.worker:SetAction(ACTIONS.CHOP, 4)
+    --inst.components.worker:SetAction(ACTIONS.MINE, 1)
+    inst.components.worker:SetAction(ACTIONS.HAMMER, 4)
+--Sets max values.
+    inst.components.health.maxhealth = 2000
+    inst.components.sanity:SetPercent(1)
+    inst.components.health:SetPercent(1)
+    inst.components.hunger:SetPercent(1)
+--Sets a safe temperature.
+    inst.components.temperature:SetTemp(20)
+--Invulnerabilities.
+	inst.components.health.invincible = true
+    inst.components.hunger:Pause()
+    inst.components.sanity.ignore = true
+--Set waterproof since rain does nothing anyway. The only reason this works on the entity directly is because I patched it in modmain.
+	if softresolvefilepath("scripts/components/waterproofer.lua") then --vanilla compatibility
+		inst:AddComponent("waterproofer")
+	end
+--Just in case...
+    inst.components.eater.strongstomach = true
+    inst.components.eater.monsterimmune = true 
+--Nightvision.
+	if not inst.Light then
+		CreateNightvision(inst)
+	end
+    inst.Light:Enable(true)
+--Ambiance.
+    inst.components.dynamicmusic:Disable()
+--Various HUD elements.
+    inst:DoTaskInTime(0, function() SetHUDState(inst) end)
+end
+
 function mon(who, option)
 	if who == -1 then
 		BecomeWik(GetPlayer())
