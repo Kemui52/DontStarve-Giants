@@ -5,9 +5,9 @@ local actionhandlers =
 }
 
 local function DoFootstep(inst)
-    GetPlayer().components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 0.8, 40)
+    GetPlayer().components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 0.7, 40)
     local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 4.3)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3.8)
     local heading_angle = -(inst.Transform:GetRotation())
 	GlobalDestroyings(inst, pt, ents, heading_angle)
 end
@@ -209,7 +209,7 @@ CommonStates.AddWalkStates(
             TimeEvent(17*FRAMES, function(inst) inst.Physics:Stop() end),
 		},
         walktimeline = 
-        { 
+        { --sound desync when walking north. what do?
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/walk_vo") end),
             TimeEvent(18*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/foley") end),
             TimeEvent(19*FRAMES, function(inst)

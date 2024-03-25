@@ -1485,7 +1485,7 @@ print("Bearger WorkEntities ran. I wonder how?")
 end
 function BeargerSpeed(speed)
 	local inst = GetPlayer()
-	if inst.shallwalk == nil then print("WARNING - You're not a bearger!") return end
+	if inst.shallwalk == nil then print("ERROR - You're not a bearger!") return end
 	if speed == nil then
 		if inst.shallwalk == 2 then
 			inst.shallwalk = 0
@@ -1683,7 +1683,7 @@ local inst = GetPlayer()
 end
 function BigFootSound()
 	local inst = GetPlayer()
-	if inst.altsound == nil then print("WARNING - You're not the big foot!") return end
+	if inst.altsound == nil then print("ERROR - You're not the big foot!") return end
 	if inst.altsound == "dontstarve_DLC001/creatures/glommer/foot_ground" then
 		inst.altsound = "dontstarve_DLC001/creatures/bearger/groundpound"
 	else
@@ -1698,9 +1698,9 @@ local inst = GetPlayer()
     inst.lizard = true
     inst:AddTag("beaver")
 --Define size of creature.
-    inst.Transform:SetScale(1.25, 1.25, 1.25, 1.25)
+    inst.Transform:SetScale(1.4, 1.4, 1.4, 1.4)
 --Move camera up for tall monster.
-	--TheCamera:SetOffset(Vector3(0,3,0))
+	TheCamera:SetOffset(Vector3(0,3,0))
 --Set map icon.
 	if softresolvefilepath("images/leif.tex") then
 		if kind <= 0 then
@@ -1720,7 +1720,7 @@ local inst = GetPlayer()
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
-    inst.components.locomotor.walkspeed = 1.5
+    inst.components.locomotor.walkspeed = 3
 --    inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Remove collisions.
@@ -1772,19 +1772,41 @@ local inst = GetPlayer()
 end
 
 function mon(who, option)
-	if who == -1 then
+	local TransformFunctions =
+	{
+	[0] = function() BecomeLizard() end,
+		function() BecomeTreeguard(option) end,
+		function() BecomeDeerclops() end,
+		function() BecomeBearger(option) end,
+		function() BecomeMooseGoose() end,
+		function() BecomeBigFoot(option) end,
+	}
+
+	if who <= -1 then
 		BecomeWik(GetPlayer())
-	elseif who == 0 then
-		BecomeLizard()
-	elseif who == 1 then
-		BecomeDeerclops()
-	elseif who == 2 then
-		BecomeBearger(option)
-	elseif who == 3 then
-		BecomeMooseGoose()
-	elseif who == 4 then
-		BecomeBigFoot(option)
+	elseif TransformFunctions[who] then
+		TransformFunctions[who]()
+	else
+		TransformFunctions[#TransformFunctions]()
+		print("WARNING - Provided monster index too high. Max is "..#TransformFunctions..".")
+		print("Becoming BigFoot.")
 	end
+
+	-- if who == -1 then
+		-- BecomeWik(GetPlayer())
+	-- elseif who == 0 then
+		-- BecomeLizard()
+	-- elseif who == 1 then
+		-- BecomeTreeguard(option)
+	-- elseif who == 2 then
+		-- BecomeDeerclops()
+	-- elseif who == 3 then
+		-- BecomeBearger(option)
+	-- elseif who == 4 then
+		-- BecomeMooseGoose()
+	-- elseif who == 5 then
+		-- BecomeBigFoot(option)
+	-- end
 
 end
 
