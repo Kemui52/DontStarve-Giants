@@ -5,9 +5,12 @@ local actionhandlers =
 }
 
 local function DoFootstep(inst)
-    GetPlayer().components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 0.7, 40)
+    inst.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 0.7, 40)
+end
+
+local function destroystuff(inst)
     local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3.8)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3.7)
     local heading_angle = -(inst.Transform:GetRotation())
 	GlobalDestroyings(inst, pt, ents, heading_angle)
 end
@@ -209,17 +212,61 @@ CommonStates.AddWalkStates(
             TimeEvent(17*FRAMES, function(inst) inst.Physics:Stop() end),
 		},
         walktimeline = 
-        { --sound desync when walking north. what do?
+        {
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/walk_vo") end),
             TimeEvent(18*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/foley") end),
             TimeEvent(19*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() ~= FACING_UP and not inst.sg:HasStateTag("didstomp") then
 				inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/footstep")
 				DoFootstep(inst)
+				destroystuff(inst)
+				inst.sg:AddStateTag("didstomp")
+			end
+				end),
+            TimeEvent(31*FRAMES, function(inst)
+			if not inst.sg:HasStateTag("didstomp") then
+				inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/footstep")
+				DoFootstep(inst)
+				destroystuff(inst)
+			end
+				inst.sg:RemoveStateTag("didstomp")
+				end),
+            TimeEvent(36*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() ~= FACING_UP then
+				destroystuff(inst)
+			end
+				end),
+            TimeEvent(48*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() == FACING_UP then
+				destroystuff(inst)
+			end
 				end),
             TimeEvent(52*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/foley") end),
             TimeEvent(53*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() ~= FACING_UP and not inst.sg:HasStateTag("didstomp") then
 				inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/footstep")
 				DoFootstep(inst)
+				destroystuff(inst)
+				inst.sg:AddStateTag("didstomp")
+			end
+				end),
+            TimeEvent(65*FRAMES, function(inst)
+			if not inst.sg:HasStateTag("didstomp") then
+				inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/footstep")
+				DoFootstep(inst)
+				destroystuff(inst)
+			end
+				inst.sg:RemoveStateTag("didstomp")
+				end),
+            TimeEvent(70*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() ~= FACING_UP then
+				destroystuff(inst)
+			end
+				end),
+            TimeEvent(14*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() == FACING_UP then
+				destroystuff(inst)
+			end
 				end),
         },
         endtimeline=

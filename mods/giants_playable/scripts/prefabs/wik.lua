@@ -1725,13 +1725,14 @@ local inst = GetPlayer()
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Remove collisions.
 	ChangeToGhostPhysics(inst)
+	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
     inst.ActionStringOverride = dcattackactionstring
     inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
     inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
     inst.components.playeractionpicker.rightclickoverride = RightClickPicker
 --Blobby shadow size.
-    inst.DynamicShadow:SetSize(4, 1.5)
+    inst.DynamicShadow:SetSize(5, 1.5)
 --Generic combat stats.
     inst.components.combat:SetDefaultDamage(1000)
     inst.components.combat:SetAreaDamage(5, 1)
@@ -1787,9 +1788,9 @@ function mon(who, option)
 	elseif TransformFunctions[who] then
 		TransformFunctions[who]()
 	else
-		TransformFunctions[#TransformFunctions]()
 		print("WARNING - Provided monster index too high. Max is "..#TransformFunctions..".")
 		print("Becoming BigFoot.")
+		TransformFunctions[#TransformFunctions]()
 	end
 
 	-- if who == -1 then
