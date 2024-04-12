@@ -1097,6 +1097,7 @@ function BecomeWik(inst)
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
     inst.components.locomotor:EnableGroundSpeedMultiplier(true)
 	ChangeToCharacterPhysics(inst)
+	inst.Physics:SetMass(75)
 
     inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
     inst.components.combat:SetAreaDamage(nil, 1)
@@ -1698,7 +1699,7 @@ local inst = GetPlayer()
     inst.lizard = true
     inst:AddTag("beaver")
 --Define size of creature.
-    inst.Transform:SetScale(1.4, 1.4, 1.4, 1.4)
+    inst.Transform:SetScale(1.5, 1.5, 1.5, 1.5)
 --Move camera up for tall monster.
 	TheCamera:SetOffset(Vector3(0,3,0))
 --Set map icon.
@@ -1723,7 +1724,7 @@ local inst = GetPlayer()
     inst.components.locomotor.walkspeed = 3
 --    inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
---Remove collisions.
+--Remove collisions and make unstoppable.
 	ChangeToGhostPhysics(inst)
 	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
@@ -1732,7 +1733,7 @@ local inst = GetPlayer()
     inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
     inst.components.playeractionpicker.rightclickoverride = RightClickPicker
 --Blobby shadow size.
-    inst.DynamicShadow:SetSize(5, 1.5)
+    inst.DynamicShadow:SetSize(8, 1.5)
 --Generic combat stats.
     inst.components.combat:SetDefaultDamage(1000)
     inst.components.combat:SetAreaDamage(5, 1)

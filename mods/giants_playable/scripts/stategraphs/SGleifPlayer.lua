@@ -213,6 +213,16 @@ CommonStates.AddWalkStates(
 		},
         walktimeline = 
         {
+            TimeEvent(2*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() ~= FACING_UP and inst.sg.prevstate == inst.sg.currentstate then --WHY DID I HAVE TO DO IT LIKE THIS?!?!?
+				destroystuff(inst)
+			end
+				end),
+            TimeEvent(14*FRAMES, function(inst)
+			if inst.AnimState:GetCurrentFacing() == FACING_UP then
+				destroystuff(inst)
+			end
+				end),
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/walk_vo") end),
             TimeEvent(18*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/foley") end),
             TimeEvent(19*FRAMES, function(inst)
@@ -257,16 +267,6 @@ CommonStates.AddWalkStates(
 				destroystuff(inst)
 			end
 				inst.sg:RemoveStateTag("didstomp")
-				end),
-            TimeEvent(70*FRAMES, function(inst)
-			if inst.AnimState:GetCurrentFacing() ~= FACING_UP then
-				destroystuff(inst)
-			end
-				end),
-            TimeEvent(14*FRAMES, function(inst)
-			if inst.AnimState:GetCurrentFacing() == FACING_UP then
-				destroystuff(inst)
-			end
 				end),
         },
         endtimeline=
