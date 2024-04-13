@@ -1008,12 +1008,7 @@ AddPrefabPostInit("reeds", wikreeds)
 AddPrefabPostInit("crow", wikbirds)
 AddPrefabPostInit("robin", wikbirds)
 AddPrefabPostInit("robin_winter", wikbirds)
-AddPrefabPostInit("cactus", wikcactus)
-AddPrefabPostInit("tumbleweed", wiktumbleweed)
-AddPrefabPostInit("bigfootprint", wikbigfootprint)
-AddPrefabPostInit("groundpoundring_fx", wikgroundpoundring)
 AddComponentPostInit("hounded", wikhounded)
-AddComponentPostInit("moisture", wikmoisture)
 AddPrefabPostInit("dirtpile", wikdirtpile)
 AddPrefabPostInit("fireflies", wikfireflies)
 AddPrefabPostInit("slurtlehole", wikslurtlehole)
@@ -1022,6 +1017,15 @@ AddPrefabPostInit("pillar_algae", wikpillar_cave)
 AddPrefabPostInit("pillar_stalactite", wikpillar_stalactite)
 --AddPrefabPostInit("pillar_ruins", wikpillar_cave)
 AddPrefabPostInit("spiderhole", wikspiderhole)
+if GLOBAL.softresolvefilepath("anim/foot_build.zip") then
+ AddPrefabPostInit("cactus", wikcactus)
+ AddPrefabPostInit("tumbleweed", wiktumbleweed)
+ AddPrefabPostInit("bigfootprint", wikbigfootprint)
+ AddPrefabPostInit("groundpoundring_fx", wikgroundpoundring)
+ AddComponentPostInit("moisture", wikmoisture)
+else
+ print("Skipped RoG prefabs.")
+end
 
 --[[   	   makebird("robin", "robin"),
 	   makebird("robin_winter", "junco"),

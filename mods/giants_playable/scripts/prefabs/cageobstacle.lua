@@ -6,7 +6,7 @@ local assets=
 
 local prefabs =
 {
-    "wikcag1",
+    "wikcage",
 }    
 
 

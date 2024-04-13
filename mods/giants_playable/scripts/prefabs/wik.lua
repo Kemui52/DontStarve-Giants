@@ -1085,6 +1085,7 @@ function BecomeWik(inst)
     inst.AnimState:SetBuild("wik_skinny")
     inst:SetStateGraph("SGwik")
     inst:RemoveTag("beaver")
+	inst:AddTag("merm")
 
 	inst.shallwalk = nil
 	inst.altsound = nil
@@ -1181,6 +1182,14 @@ local function CreateNightvision(inst)
     inst.Light:SetColour(255/255,0/255,0/255)
 end
 
+local function AddMonsterTags(inst)
+	inst:RemoveTag("merm")
+	if not inst:HasTag("monster") then
+		inst:AddTag("monster")
+		inst:AddTag("catcoon")
+	end
+end
+
 function BecomeLizard()
 local inst = GetPlayer()
 --Set up transformation flags.
@@ -1196,6 +1205,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("werelizard_build")
     inst.AnimState:SetBank("werelizard")
     inst:SetStateGraph("SGwerelizard")
+--Set reaction tags.
+	AddMonsterTags(inst)
 	--inst:AddTag("monster")
 	--inst:AddTag("catcoon")
 --[[    local loot = {"meat", "meat", "meat", "meat", "meat", "meat", "meat", "meat", "deerclops_eyeball"}
@@ -1208,8 +1219,9 @@ local inst = GetPlayer()
     inst.components.locomotor.runspeed = 4
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --    inst.components.inventory:DropEverything()
---Remove collisions.
+--Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
+	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
     inst.ActionStringOverride = dcattackactionstring
     inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
@@ -1322,14 +1334,17 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("deerclops_build")
     inst.AnimState:SetBank("deerclops")
     inst:SetStateGraph("SGdeerclopstemp")
+--Set reaction tags.
+	AddMonsterTags(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
 --    inst.components.locomotor.walkspeed = 7
     inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
---Remove collisions.
+--Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
+	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
     inst.ActionStringOverride = dcattackactionstring
     inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
@@ -1395,6 +1410,8 @@ if shallwalk == nil then shallwalk = 0 end
     inst.AnimState:SetBuild("bearger_build")
     inst.AnimState:SetBank("bearger")
 	--Stategraph moved for Bearger.
+--Set reaction tags.
+	AddMonsterTags(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --Set speed and Bearger-specific movement.
@@ -1419,8 +1436,9 @@ if shallwalk == nil then shallwalk = 0 end
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Stategraph needs to come after all that junk.
     inst:SetStateGraph("SGBeargertemp")
---Remove collisions.
+--Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
+	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
     inst.ActionStringOverride = dcattackactionstring
     inst.components.playercontroller.actionbuttonoverride = LizardActionButton
@@ -1521,14 +1539,17 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("goosemoose_build")
     inst.AnimState:SetBank("goosemoose")
     inst:SetStateGraph("SGMooseGoosetemp")
+--Set reaction tags.
+	AddMonsterTags(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
     inst.components.locomotor.walkspeed = 7
     --inst.components.locomotor.runspeed = 13
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
---Remove collisions.
+--Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
+	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
     inst.ActionStringOverride = dcattackactionstring
     inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
@@ -1608,14 +1629,17 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("foot_build")
     inst.AnimState:SetBank("foot")
     inst:SetStateGraph("SGbigfoottemp")
+--Set reaction tags.
+	AddMonsterTags(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
     inst.components.locomotor.walkspeed = 7
     --inst.components.locomotor.runspeed = 13
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
---Remove collisions with objects.
+--Remove collisions with objects and make heavy.
 	ChangeToBigFootPhysics(inst)
+	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
     inst.ActionStringOverride = dcattackactionstring
     inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
@@ -1718,13 +1742,15 @@ local inst = GetPlayer()
 	end
     inst.AnimState:SetBank("leif")
     inst:SetStateGraph("SGleifPlayer")
+--Set reaction tags.
+	AddMonsterTags(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
     inst.components.locomotor.walkspeed = 3
 --    inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
---Remove collisions and make unstoppable.
+--Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
 	inst.Physics:SetMass(99999)
 --Mouseover string and action overrides.
@@ -1733,7 +1759,7 @@ local inst = GetPlayer()
     inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
     inst.components.playeractionpicker.rightclickoverride = RightClickPicker
 --Blobby shadow size.
-    inst.DynamicShadow:SetSize(8, 1.5)
+    inst.DynamicShadow:SetSize(9, 3.5)
 --Generic combat stats.
     inst.components.combat:SetDefaultDamage(1000)
     inst.components.combat:SetAreaDamage(5, 1)
@@ -1771,6 +1797,9 @@ local inst = GetPlayer()
     inst.components.dynamicmusic:Disable()
 --Various HUD elements.
     inst:DoTaskInTime(0, function() SetHUDState(inst) end)
+end
+function BecomeLumpyTreeguard()
+	BecomeTreeguard(1)
 end
 
 function mon(who, option)
@@ -1934,7 +1963,7 @@ local fn = function(inst)
 	inst:AddTag("wik")
 	inst:AddTag("player")
 	inst:AddTag("character")
---	inst:AddTag("merm")
+	--added in BecomeWik inst:AddTag("merm")
 	-- Make Pigmen Attack --
 	inst:AddTag("monster")
 	inst:AddTag("catcoon")

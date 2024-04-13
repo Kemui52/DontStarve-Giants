@@ -1,4 +1,6 @@
-BecomeLizard()			werelizard from wik mod
+BecomeLizard()			werelizard from wicked mod
+BecomeTreeguard(type)
+BecomeLumpyTreeguard()
 BecomeDeerclops()	
 BecomeBearger(shallwalk)
 	BeargerSpeed(speed)	0, 1, or 2 to change walk speed

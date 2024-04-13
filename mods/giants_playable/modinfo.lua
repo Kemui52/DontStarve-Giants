@@ -11,7 +11,7 @@ priority = 2.5
 dont_starve_compatible = nil --random crash with no log. wtf???
 reign_of_giants_compatible = true
 shipwrecked_compatible = nil --don't have, can't test
-hamlet_compatible = nil --todo
+hamlet_compatible = nil --didn't test rundown house build
 
 forumthread = ""
 
