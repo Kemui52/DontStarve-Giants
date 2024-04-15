@@ -1069,6 +1069,45 @@ local function SetHUDState(inst)
 end
 
 
+local function CustomWarWaves(inst, numWaves, totalAngle, waveSpeed, wavePrefab, initialOffset, idleTime, instantActive, random_angle)
+	wavePrefab = wavePrefab or "rogue_wave"
+	totalAngle = math.clamp(totalAngle, 1, 360)
+
+    local pos = inst:GetPosition()
+    local startAngle = (random_angle and math.random(-180, 180)) or inst.Transform:GetRotation()
+    local anglePerWave = totalAngle/(numWaves - 1)
+
+	if totalAngle == 360 then
+		anglePerWave = totalAngle/numWaves
+	end
+
+    for i = 0, numWaves - 1 do
+        local wave = SpawnPrefab(wavePrefab)
+
+        local angle = (startAngle - (totalAngle/2)) + (i * anglePerWave)
+        local rad = initialOffset or (inst.Physics and inst.Physics:GetRadius()) or 0.0
+        local total_rad = rad + wave.Physics:GetRadius() + 0.1
+        local offset = Vector3(math.cos(angle*DEGREES),0, -math.sin(angle*DEGREES)):Normalize()
+        local wavepos = pos + (offset * total_rad)
+
+		wave.Transform:SetPosition(wavepos:Get())
+
+		local speed = waveSpeed or 6
+		wave.Transform:SetRotation(angle)
+		wave.Physics:SetMotorVel(speed, 0, 0)
+		wave.idle_time = idleTime or 5
+
+		if instantActive then
+			wave.sg:GoToState("idle")
+		end
+
+		if wave.soundtidal then
+			wave.SoundEmitter:PlaySound("dontstarve_DLC002/common/rogue_waves/"..wave.soundtidal)
+		end
+    end
+end
+
+
 function BecomeWik(inst)
 
     inst.Transform:SetScale(1, 1, 1, 1)
@@ -1084,6 +1123,7 @@ function BecomeWik(inst)
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wik_skinny")
     inst:SetStateGraph("SGwik")
+	inst.entity:AddMiniMapEntity():SetIcon( "wikmini.tex" )
     inst:RemoveTag("beaver")
 	inst:AddTag("merm")
 
@@ -1092,6 +1132,9 @@ function BecomeWik(inst)
     
     if inst.components.worker then inst:RemoveComponent("worker") end
 	if inst.components.waterproofer then inst:RemoveComponent("waterproofer") end
+	if inst.storedOnStrike then
+		inst.components.playerlightningtarget:SetOnStrikeFn(inst.storedOnStrike)
+	end
 
     inst.components.talker:StopIgnoringAll()
     inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED
@@ -1183,10 +1226,31 @@ local function CreateNightvision(inst)
 end
 
 local function AddMonsterTags(inst)
-	inst:RemoveTag("merm")
+	inst:RemoveTag("merm") --Hostile merms
 	if not inst:HasTag("monster") then
-		inst:AddTag("monster")
-		inst:AddTag("catcoon")
+		inst:AddTag("monster") --Hostile pigs
+		inst:AddTag("catcoon") --I dunno what this does...
+	end
+	inst.storedOnStrike = inst.components.playerlightningtarget.onstrikefn --Save default function for restoring
+	inst.components.playerlightningtarget:SetOnStrikeFn(function(inst) inst:PushEvent("lightningdamageavoided") end) --Null out to avoid stategraph errors
+	local wave_timer = 1
+	if GetWorld():HasTag("shipwrecked") or GetWorld():HasTag("porkland") then
+		inst.components.keeponland.OnUpdateSw = function(self, dt)
+			wave_timer = wave_timer - dt
+			if wave_timer < 0 then
+				if self.inst.GetIsOnWater(self.inst) and inst.sg:HasStateTag("moving") then
+					CustomWarWaves(self.inst, 5, 135, nil, "wave_ripple", 3)
+				end
+				wave_timer = 1
+			end
+		end
+	end
+--Disable wetness by overriding delta with 0.
+	if inst.components.moisture then
+		local moisture_DoDelta = inst.components.moisture.DoDelta
+		inst.components.moisture.DoDelta = function(self, num)
+			return moisture_DoDelta(self, 0)
+		end
 	end
 end
 
@@ -1339,8 +1403,8 @@ local inst = GetPlayer()
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
---    inst.components.locomotor.walkspeed = 7
-    inst.components.locomotor.runspeed = 3
+    inst.components.locomotor.walkspeed = 3.6
+--    inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
@@ -1932,7 +1996,7 @@ local fn = function(inst)
 	local HungerDrainRate = 1
 
 	-- Change to custom minimap icon
-	inst.entity:AddMiniMapEntity():SetIcon( "wikmini.tex" )
+	--moved to BecomeWik inst.entity:AddMiniMapEntity():SetIcon( "wikmini.tex" )
 	-- Custom Sound
 	inst.soundsname = "wik"
 	--inst.talker_path_override = "dontstarve_DLC001/characters/"
@@ -1944,7 +2008,8 @@ local fn = function(inst)
 
 
 	mermhouse.sortkey = 13
-	STRINGS.RECIPE_DESC.MERMHOUSE = "Cousins House"  
+	STRINGS.NAMES.MERMHOUSE = "Cousin's House"
+	STRINGS.RECIPE_DESC.MERMHOUSE = "Cousin's House"
 	mermhouse.atlas = "images/inventoryimages/mermhouse.xml"
 	
     -- Make Pig House locked

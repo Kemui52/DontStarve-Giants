@@ -2,7 +2,7 @@
 
 -- This information tells other players more about the mod
 name = "Playable Giants"
-description = "\"This is monumental.\"\n\nBased off mods by Reislet and Bones, and ziyuan."
+description = "\"This is monumental.\"\n\nBased off mods by Reislet and Bones, DarkXero, and ziyuan."
 --             Updated Mod character Wicked the Lizardman./n"
 author = "Kemui52"
 api_version = 6

@@ -1038,11 +1038,11 @@ end
 	   makebirdex("parrot_blue", "robin_winter", "dontstarve_DLC002/creatures/parrot/takeoff", "dontstarve_DLC002/creatures/parrot/chirp"),
 	   makebirdex("kingfisher", "robin_winter", "dontstarve/birds/takeoff_faster", "dontstarve_DLC003/creatures/king_fisher/chirp",nil,"dontstarve_DLC003/creatures/king_fisher/take_off")	   --]]
 
---AddPrefabPostInit("pigman", wikpigman) 
---AddPrefabPostInit("pighouse", wikpighouse)
---AddPrefabPostInit("bunnyman", wikbunny)
---AddPrefabPostInit("rabbithouse", wikbunnyhouse)
---AddPrefabPostInit("pigskin", wikpigskin)
---AddPrefabPostInit("catcoon", wikcatcoon)
---AddPrefabPostInit("spider", wikspider)
---AddPrefabPostInit("spider_warrior", wikwarriorspider)
+AddPrefabPostInit("pigman", wikpigman) 
+AddPrefabPostInit("pighouse", wikpighouse)
+AddPrefabPostInit("bunnyman", wikbunny)
+AddPrefabPostInit("rabbithouse", wikbunnyhouse)
+AddPrefabPostInit("pigskin", wikpigskin)
+AddPrefabPostInit("catcoon", wikcatcoon)
+AddPrefabPostInit("spider", wikspider)
+AddPrefabPostInit("spider_warrior", wikwarriorspider)
