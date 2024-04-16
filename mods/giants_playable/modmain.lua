@@ -241,6 +241,8 @@ function playerpostinit(inst)
         
     end
 
+	inst.giantWaves = GetModConfigData("giantWaves")
+
 end
 
 AddSimPostInit(playerpostinit)

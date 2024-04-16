@@ -2,7 +2,7 @@ require "stategraphs/SGwik"
 require "stategraphs/SGwerelizard"
 
 local function localPlaySound(v, sound, skipcheck)
-	if not v.SoundEmitter and not skipcheck then
+	if not skipcheck and not v.SoundEmitter then
 		v.entity:AddSoundEmitter()
 	end
 	v.SoundEmitter:PlaySound(sound)
@@ -1069,6 +1069,10 @@ local function SetHUDState(inst)
 end
 
 
+local function IsWorldWithWater()
+	return GetWorld():HasTag("shipwrecked") or GetWorld():HasTag("porkland")
+end
+
 local function CustomWarWaves(inst, numWaves, totalAngle, waveSpeed, wavePrefab, initialOffset, idleTime, instantActive, random_angle)
 	wavePrefab = wavePrefab or "rogue_wave"
 	totalAngle = math.clamp(totalAngle, 1, 360)
@@ -1225,25 +1229,20 @@ local function CreateNightvision(inst)
     inst.Light:SetColour(255/255,0/255,0/255)
 end
 
-local function AddMonsterTags(inst)
+local function GenericMonsterSetup(inst)
 	inst:RemoveTag("merm") --Hostile merms
 	if not inst:HasTag("monster") then
 		inst:AddTag("monster") --Hostile pigs
 		inst:AddTag("catcoon") --I dunno what this does...
 	end
+--Null lightning strike to avoid stategraph errors.
 	inst.storedOnStrike = inst.components.playerlightningtarget.onstrikefn --Save default function for restoring
-	inst.components.playerlightningtarget:SetOnStrikeFn(function(inst) inst:PushEvent("lightningdamageavoided") end) --Null out to avoid stategraph errors
-	local wave_timer = 1
-	if GetWorld():HasTag("shipwrecked") or GetWorld():HasTag("porkland") then
-		inst.components.keeponland.OnUpdateSw = function(self, dt)
-			wave_timer = wave_timer - dt
-			if wave_timer < 0 then
-				if self.inst.GetIsOnWater(self.inst) and inst.sg:HasStateTag("moving") then
-					CustomWarWaves(self.inst, 5, 135, nil, "wave_ripple", 3)
-				end
-				wave_timer = 1
-			end
-		end
+	inst.components.playerlightningtarget:SetOnStrikeFn(function(inst) inst:PushEvent("lightningdamageavoided") end)
+--Empty this function so it's defined at all.
+	inst.StompSplash = function(inst) return end
+--Null the function that kicks you off the water.
+	if IsWorldWithWater then
+		inst.components.keeponland.OnUpdateSw = function(self, dt) return end
 	end
 --Disable wetness by overriding delta with 0.
 	if inst.components.moisture then
@@ -1269,8 +1268,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("werelizard_build")
     inst.AnimState:SetBank("werelizard")
     inst:SetStateGraph("SGwerelizard")
---Set reaction tags.
-	AddMonsterTags(inst)
+--Do common setup.
+	GenericMonsterSetup(inst)
 	--inst:AddTag("monster")
 	--inst:AddTag("catcoon")
 --[[    local loot = {"meat", "meat", "meat", "meat", "meat", "meat", "meat", "meat", "deerclops_eyeball"}
@@ -1398,14 +1397,22 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("deerclops_build")
     inst.AnimState:SetBank("deerclops")
     inst:SetStateGraph("SGdeerclopstemp")
---Set reaction tags.
-	AddMonsterTags(inst)
+--Do common setup.
+	GenericMonsterSetup(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
     inst.components.locomotor.walkspeed = 3.6
 --    inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+--Create waves when stomping through water.
+	if IsWorldWithWater and inst.giantWaves then
+		inst.StompSplash = function(inst)
+			if inst.GetIsOnWater(inst) then
+				CustomWarWaves(inst, 6, 135, 3.6+1, "wave_ripple", 2)
+			end
+		end
+	end
 --Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
 	inst.Physics:SetMass(99999)
@@ -1474,8 +1481,8 @@ if shallwalk == nil then shallwalk = 0 end
     inst.AnimState:SetBuild("bearger_build")
     inst.AnimState:SetBank("bearger")
 	--Stategraph moved for Bearger.
---Set reaction tags.
-	AddMonsterTags(inst)
+--Do common setup.
+	GenericMonsterSetup(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --Set speed and Bearger-specific movement.
@@ -1603,8 +1610,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("goosemoose_build")
     inst.AnimState:SetBank("goosemoose")
     inst:SetStateGraph("SGMooseGoosetemp")
---Set reaction tags.
-	AddMonsterTags(inst)
+--Do common setup.
+	GenericMonsterSetup(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
@@ -1693,8 +1700,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("foot_build")
     inst.AnimState:SetBank("foot")
     inst:SetStateGraph("SGbigfoottemp")
---Set reaction tags.
-	AddMonsterTags(inst)
+--Do common setup.
+	GenericMonsterSetup(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.
@@ -1806,8 +1813,8 @@ local inst = GetPlayer()
 	end
     inst.AnimState:SetBank("leif")
     inst:SetStateGraph("SGleifPlayer")
---Set reaction tags.
-	AddMonsterTags(inst)
+--Do common setup.
+	GenericMonsterSetup(inst)
 --Remove text.
     inst.components.talker:IgnoreAll()
 --General speed.

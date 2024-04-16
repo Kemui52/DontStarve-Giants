@@ -6,16 +6,15 @@ description = "\"This is monumental.\"\n\nBased off mods by Reislet and Bones, D
 --             Updated Mod character Wicked the Lizardman./n"
 author = "Kemui52"
 api_version = 6
-version = "1.26"
+version = "1.5"
 priority = 2.5
-dont_starve_compatible = nil --random crash with no log. wtf???
+dont_starve_compatible = nil --random crash with no log. wtf??? was it 'cause I wasn't wik?
 reign_of_giants_compatible = true
-shipwrecked_compatible = nil --don't have, can't test
-hamlet_compatible = nil --didn't test rundown house build
+shipwrecked_compatible = nil --might be fine, but can't test
+hamlet_compatible = true --seems okay
 
 forumthread = ""
 
--- This lets other players know if your mod is out of date, update it to match the current version in the game
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 --modicons not done, yet.
@@ -108,6 +107,18 @@ configuration_options =
 					},
 
 		default = "default",
+	
+	},
+
+	{
+		name = "giantWaves",
+		label = "Waves in Water",
+		options =	{
+						{description = "Yes", data = true},
+						{description = "No", data = false},
+					},
+
+		default = true,
 	
 	},
 

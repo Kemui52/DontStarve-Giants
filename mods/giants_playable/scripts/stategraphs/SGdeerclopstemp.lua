@@ -96,6 +96,7 @@ CommonStates.AddWalkStates( states,
 	{
         TimeEvent(7*FRAMES, function(inst)
                     DeerclopsFootstep(inst)
+					inst.StompSplash(inst)
                     destroystuff(inst)
                     end),
 	},
@@ -107,6 +108,7 @@ CommonStates.AddWalkStates( states,
                     end),
         TimeEvent(23*FRAMES, function(inst)
                     DeerclopsFootstep(inst)
+					inst.StompSplash(inst)
                     destroystuff(inst)
                     end),
         TimeEvent(36*FRAMES, function(inst)
@@ -115,6 +117,7 @@ CommonStates.AddWalkStates( states,
                     end),
         TimeEvent(48*FRAMES, function(inst)
                     DeerclopsFootstep(inst)
+					inst.StompSplash(inst)
                     destroystuff(inst)
                     end),
     },
