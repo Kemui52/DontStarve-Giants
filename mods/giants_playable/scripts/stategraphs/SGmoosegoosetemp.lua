@@ -172,6 +172,14 @@ local states=
                 inst.Physics:Stop()
                 ShakeIfClose(inst)
 				destroystuff(inst)
+			if inst.giantWaves then
+				if inst.SplashSkip then
+					inst.SplashSkip = false
+				else
+					inst.SplashSkip = true
+					inst.StompSplash(inst)
+				end
+			end
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/land")
             end),
         },

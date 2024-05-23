@@ -241,6 +241,8 @@ function playerpostinit(inst)
         
     end
 
+	inst.StompSplash = function(inst) return end --Define this empty so it can be called when waves are off.
+
 	inst.giantWaves = GetModConfigData("giantWaves")
 
 end

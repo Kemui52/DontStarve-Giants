@@ -312,6 +312,7 @@ local states=
                 ShakeIfClose(inst)
                 inst.components.groundpounder:GroundPound()
 				destroystuff(inst,6)
+				inst.StompSplash(inst, inst.components.locomotor.runspeed, true)
                 inst.CanGroundPound = false
                 if not inst.components.timer:TimerExists("GroundPound") then
                     inst.components.timer:StartTimer("GroundPound", 10)
@@ -534,19 +535,14 @@ local states=
                     if inst.shallwalk == 2 or inst.components.combat.target then --charge walk
                         DoFootstep(inst)
 						destroystuff(inst)
+						inst.StompSplash(inst, inst.components.locomotor.walkspeed)
                     end
                 end),
-                TimeEvent(18*FRAMES, function(inst)
-                    if inst.shallwalk == 2 or inst.components.combat.target then --charge walk
-                        DoFootstep(inst)
-						destroystuff(inst)
-                    end
-                end),
-
                 TimeEvent(4*FRAMES, function(inst) 
                     if inst.shallwalk == 1 and not inst.components.combat.target then
                         DoFootstep(inst)
 						destroystuff(inst)
+						inst.StompSplash(inst, inst.components.locomotor.walkspeed)
                     end
                 end),
                 --[[TimeEvent(17*FRAMES, function(inst) 
@@ -554,10 +550,18 @@ local states=
 						destroystuff(inst)
                     end
                 end),--]]
+                TimeEvent(18*FRAMES, function(inst)
+                    if inst.shallwalk == 2 or inst.components.combat.target then --charge walk
+                        DoFootstep(inst)
+						destroystuff(inst)
+						--inst.StompSplash(inst, inst.components.locomotor.walkspeed)
+                    end
+                end),
                 TimeEvent(30*FRAMES, function(inst) 
                     if inst.shallwalk == 1 and not inst.components.combat.target then
                         DoFootstep(inst)
 						destroystuff(inst)
+						inst.StompSplash(inst, inst.components.locomotor.walkspeed)
                     end
                 end),
                 --[[TimeEvent(43*FRAMES, function(inst) 
@@ -621,6 +625,7 @@ local states=
                 TimeEvent(3*FRAMES, function(inst)
                     DoFootstep(inst)
                     destroystuff(inst)
+					inst.StompSplash(inst, inst.components.locomotor.runspeed)
                 end),
                 TimeEvent(11*FRAMES, function(inst)
                     DoFootstep(inst)

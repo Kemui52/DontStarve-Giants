@@ -67,8 +67,8 @@ local function DoStep(inst)
 	inst.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 1.7, 40) 
 	inst.components.groundpounder:GroundPound()
 	SpawnPrint(inst)
-	--inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/foot_ground")
-	inst.SoundEmitter:PlaySound(inst.altsound)
+	inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/foot_water")
+--	inst.SoundEmitter:PlaySound(inst.altsound)
 	GetWorld():PushEvent("bigfootstep") --Wakes up sleeping entities.
 end
 
@@ -156,6 +156,7 @@ local states=
 			TimeEvent(5*FRAMES, function(inst)
 				DoStep(inst)
 				destroystuff(inst,7.0)
+				inst.StompSplash(inst)
 				inst.AnimState:SetSortOrder(2)
 			--	inst.AnimState:SetFinalOffset(15)
 			end),

@@ -1238,10 +1238,8 @@ local function GenericMonsterSetup(inst)
 --Null lightning strike to avoid stategraph errors.
 	inst.storedOnStrike = inst.components.playerlightningtarget.onstrikefn --Save default function for restoring
 	inst.components.playerlightningtarget:SetOnStrikeFn(function(inst) inst:PushEvent("lightningdamageavoided") end)
---Empty this function so it's defined at all.
-	inst.StompSplash = function(inst) return end
 --Null the function that kicks you off the water.
-	if IsWorldWithWater then
+	if IsWorldWithWater() then
 		inst.components.keeponland.OnUpdateSw = function(self, dt) return end
 	end
 --Disable wetness by overriding delta with 0.
@@ -1282,6 +1280,14 @@ local inst = GetPlayer()
     inst.components.locomotor.runspeed = 4
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --    inst.components.inventory:DropEverything()
+--Create waves when stomping through water.
+	if IsWorldWithWater() and inst.giantWaves then
+		inst.StompSplash = function(inst)
+			if inst.GetIsOnWater(inst) then
+				CustomWarWaves(inst, 6, 110, 4+2, "wave_ripple", 2.0)
+			end
+		end
+	end
 --Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
 	inst.Physics:SetMass(99999)
@@ -1406,10 +1412,10 @@ local inst = GetPlayer()
 --    inst.components.locomotor.runspeed = 3
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Create waves when stomping through water.
-	if IsWorldWithWater and inst.giantWaves then
+	if IsWorldWithWater() and inst.giantWaves then
 		inst.StompSplash = function(inst)
 			if inst.GetIsOnWater(inst) then
-				CustomWarWaves(inst, 6, 135, 3.6+1, "wave_ripple", 2)
+				CustomWarWaves(inst, 6, 110, 3.6+2, "wave_ripple", 2.0)
 			end
 		end
 	end
@@ -1507,6 +1513,22 @@ if shallwalk == nil then shallwalk = 0 end
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Stategraph needs to come after all that junk.
     inst:SetStateGraph("SGBeargertemp")
+--Create waves when stomping through water.
+	if IsWorldWithWater() and inst.giantWaves then
+		inst.StompSplash = function(inst, speed, pound)
+			if inst.GetIsOnWater(inst) then
+				local amount, radius
+				if pound then
+					amount = 12
+					radius = 360
+				else
+					amount = 6
+					radius = 110
+				end
+				CustomWarWaves(inst, amount, radius, speed, "wave_ripple", 2.0)
+			end
+		end
+	end
 --Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
 	inst.Physics:SetMass(99999)
@@ -1618,6 +1640,14 @@ local inst = GetPlayer()
     inst.components.locomotor.walkspeed = 7
     --inst.components.locomotor.runspeed = 13
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+--Create waves when stomping through water.
+	if IsWorldWithWater() and inst.giantWaves then
+		inst.StompSplash = function(inst)
+			if inst.GetIsOnWater(inst) then
+				CustomWarWaves(inst, 6, 110, 7, "wave_ripple", 2.0)
+			end
+		end
+	end
 --Remove collisions and make heavy.
 	ChangeToGhostPhysics(inst)
 	inst.Physics:SetMass(99999)
@@ -1708,6 +1738,14 @@ local inst = GetPlayer()
     inst.components.locomotor.walkspeed = 7
     --inst.components.locomotor.runspeed = 13
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+--Create waves when stomping through water.
+	if IsWorldWithWater() and inst.giantWaves then
+		inst.StompSplash = function(inst)
+			if inst.GetIsOnWater(inst) then
+				CustomWarWaves(inst, 14, 360, 6, nil, 2.0)
+			end
+		end
+	end
 --Remove collisions with objects and make heavy.
 	ChangeToBigFootPhysics(inst)
 	inst.Physics:SetMass(99999)
@@ -1755,7 +1793,7 @@ local inst = GetPlayer()
     inst.components.health:SetPercent(1)
     inst.components.hunger:SetPercent(1)
 --Sets a safe temperature.
-    inst.components.temperature:SetTemp(20)
+    inst.components.temperature:SetTemp(30)
 --Invulnerabilities.
 	inst.components.health.invincible = true
     inst.components.hunger:Pause()

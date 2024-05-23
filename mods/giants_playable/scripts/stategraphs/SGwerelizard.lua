@@ -31,7 +31,7 @@ end
 local function TheShake(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/deerclops/step")
     local player = GetPlayer() --GetClosestInstWithTag("player", inst, SHAKE_DIST)
-        player.components.playercontroller:ShakeCamera(inst, "FULL", 0.3, 0.03, 0.6, 40)
+        player.components.playercontroller:ShakeCamera(inst, "FULL", 0.3, 0.03, 0.3, 40)
 end
 
 local states=
@@ -150,6 +150,7 @@ CommonStates.AddRunStates(states,
         TimeEvent(10*FRAMES, function(inst)
 					TheShake(inst)
                     destroystuff(inst)
+					inst.StompSplash(inst)
                     end),
 --[[        TimeEvent(36*FRAMES, function(inst)
                     destroystuff(inst)
