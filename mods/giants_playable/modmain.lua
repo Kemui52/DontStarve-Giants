@@ -1030,6 +1030,22 @@ if GLOBAL.softresolvefilepath("anim/foot_build.zip") then
 else
  print("Skipped RoG prefabs.")
 end
+if GLOBAL.softresolvefilepath("anim/parrot_pirate.zip") then
+ AddPrefabPostInit("parrot", wikbirds)
+ AddPrefabPostInit("parrot_pirate", wikbirds)
+ AddPrefabPostInit("toucan", wikbirds)
+ AddPrefabPostInit("seagull", wikbirds)
+ AddPrefabPostInit("seagull_water", wikbirds)
+else
+ print("Skipped SW prefabs.")
+end
+if GLOBAL.softresolvefilepath("anim/pigeon_build.zip") then
+ AddPrefabPostInit("pigeon", wikbirds)
+ AddPrefabPostInit("parrot_blue", wikbirds)
+ AddPrefabPostInit("kingfisher", wikbirds)
+else
+ print("Skipped HL prefabs.")
+end
 
 --[[   	   makebird("robin", "robin"),
 	   makebird("robin_winter", "junco"),

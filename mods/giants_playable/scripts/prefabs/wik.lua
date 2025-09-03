@@ -1236,8 +1236,10 @@ local function GenericMonsterSetup(inst)
 		inst:AddTag("catcoon") --I dunno what this does...
 	end
 --Null lightning strike to avoid stategraph errors.
-	inst.storedOnStrike = inst.components.playerlightningtarget.onstrikefn --Save default function for restoring
-	inst.components.playerlightningtarget:SetOnStrikeFn(function(inst) inst:PushEvent("lightningdamageavoided") end)
+	if inst.components.playerlightningtarget then --This is null on vanilla, but didn't we give up on vanilla?
+		inst.storedOnStrike = inst.components.playerlightningtarget.onstrikefn --Save default function for restoring
+		inst.components.playerlightningtarget:SetOnStrikeFn(function(inst) inst:PushEvent("lightningdamageavoided") end)
+	end
 --Null the function that kicks you off the water.
 	if IsWorldWithWater() then
 		inst.components.keeponland.OnUpdateSw = function(self, dt) return end
