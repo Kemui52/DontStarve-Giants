@@ -84,7 +84,7 @@ GLOBAL.STRINGS.CHARACTERS.WIK = GLOBAL.require "wikSpeech"
 
 GLOBAL.STRINGS.CHARACTER_TITLES.wik = "The Lizardman"
 GLOBAL.STRINGS.CHARACTER_NAMES.wik = "Wicked"
-GLOBAL.STRINGS.CHARACTER_DESCRIPTIONS.wik = "*Recovering from an addication to meat.\n*Is a lizard and has lots of Merm cousins.\n*Can't talk smart."
+GLOBAL.STRINGS.CHARACTER_DESCRIPTIONS.wik = "*Must eat meat in moderation.\n*Is a lizard and has lots of Merm cousins.\n*Can't talk smart."
 GLOBAL.STRINGS.CHARACTER_QUOTES.wik = "\"Me want more food!\""
 
 -- Register Wik as a player
@@ -121,11 +121,11 @@ local function setWikState(inst)
 
 
     if not inst.HasSaveData and GetModConfigData("wikPlayIntro") == "Wicked" then
-        inst.components.sanity:SetPercent(.7)
+        inst.components.sanity:SetPercent(.2)
         inst.components.hunger:SetPercent(.85)
-    end 
+    end
 
-    if  inst.components.hunger.current > 50 then
+    if  inst.components.hunger.current > 200 then
 
         if inst.wikColourSetting == "green" or inst.wikColourSetting == "default" then
             inst.AnimState:SetBuild("wik_mighty")
@@ -138,7 +138,7 @@ local function setWikState(inst)
         local wikSize = 1 + (((inst.components.hunger.current - 200) / 100) * .3)
         inst.Transform:SetScale(wikSize, wikSize, wikSize, wikSize)   
 
-    elseif  inst.components.hunger.current < 50 then
+    elseif  inst.components.hunger.current < 100 then
 
         if inst.wikColourSetting == "green" or inst.wikColourSetting == "default" then
             inst.AnimState:SetBuild("wik_skinny")
@@ -231,6 +231,7 @@ function playerpostinit(inst)
 
         inst.WickzillaLevel = GetModConfigData("wikPostLevel")
         inst.WickzillaLoseExp = GetModConfigData("wikLoseExp")
+        inst.WickzillaExpMulti = GetModConfigData("wikExpMulti")
         SetStartingLevel(inst)
 
         inst.wikColourSetting = GetModConfigData("wikColour")
@@ -253,14 +254,14 @@ local function ModMaxwellIntro(inst)
 
     if GLOBAL.GetPlayer().prefab == "wik" then
 
-    --    if GetModConfigData("wikPlayIntro") == "Wicked" or GetModConfigData("wikPlayIntro") == "None" then
+        if GetModConfigData("wikPlayIntro") == "Wicked" or GetModConfigData("wikPlayIntro") == "None" then
 
             inst.components.maxwelltalker.speeches.SANDBOX_1 =
             {
                                    
             }
 
-    --    end
+        end
         
     end
     
@@ -328,7 +329,7 @@ local function wikmerm(inst)
             invader = GLOBAL.FindEntity(inst, 18, function(guy)
                 return ( guy:HasTag("monster") or guy:HasTag("pig") or guy:HasTag("smallcreature") or guy:HasTag("animal") or guy:HasTag("walrus") ) 
                     and not guy:HasTag("merm") and not guy:HasTag("butterfly") and not guy:HasTag("koalefant") and not guy:HasTag("mole")
-                    and not guy:HasTag("penguin") and not guy:HasTag("catcoon") and not guy:HasTag("tentacle") and not guy:HasTag("beefalo") and not guy:HasTag("frog") and not guy:HasTag("ghost")
+                    and not guy:HasTag("penguin") and not guy.prefab == "smallbird" and not guy:HasTag("catcoon") and not guy:HasTag("tentacle") and not guy:HasTag("beefalo") and not guy:HasTag("frog") and not guy:HasTag("ghost")
                     end)
         end
 
@@ -643,6 +644,23 @@ local function wikpighouse(inst)
     if string.sub(tostring(GLOBAL.GetPlayer()),-3) == "wik" then
         inst:AddComponent("named")
         inst.components.named:SetName("Rundown House")
+    end
+
+end
+
+local function wikbunny(inst)
+
+    if string.sub(tostring(GLOBAL.GetPlayer()),-3) == "wik" then
+        inst.components.named:SetName("Fluffy Tail")
+    end
+
+end
+
+local function wikbunnyhouse(inst)
+
+    if string.sub(tostring(GLOBAL.GetPlayer()),-3) == "wik" then
+        inst:AddComponent("named")
+        inst.components.named:SetName("Rundown Food")
     end
 
 end
@@ -1058,7 +1076,10 @@ end
 	   makebirdex("parrot_blue", "robin_winter", "dontstarve_DLC002/creatures/parrot/takeoff", "dontstarve_DLC002/creatures/parrot/chirp"),
 	   makebirdex("kingfisher", "robin_winter", "dontstarve/birds/takeoff_faster", "dontstarve_DLC003/creatures/king_fisher/chirp",nil,"dontstarve_DLC003/creatures/king_fisher/take_off")	   --]]
 
-AddPrefabPostInit("pigman", wikpigman) 
+--if setting
+AddPrefabPostInit("merm", wikmerm)
+AddPrefabPostInit("mermhouse", wikmermhouse)
+AddPrefabPostInit("pigman", wikpigman)
 AddPrefabPostInit("pighouse", wikpighouse)
 AddPrefabPostInit("bunnyman", wikbunny)
 AddPrefabPostInit("rabbithouse", wikbunnyhouse)

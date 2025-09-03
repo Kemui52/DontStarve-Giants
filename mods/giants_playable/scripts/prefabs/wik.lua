@@ -168,10 +168,10 @@ local function levelUp(inst)
 
     if inst.level > 5 and not inst:HasTag("beaver") then 
     	inst.components.eater:SetOmnivore()
-
+    	STRINGS.CHARACTERS.WIK = require "wikSpeech"
     else
     	inst.components.eater:SetVegetarian()
-
+    	STRINGS.CHARACTERS.WIK = require "wikSpeechVeggie"
     end
 
     print ('LevelUp Called')
@@ -689,8 +689,10 @@ local function ontemperaturechange(inst, data)
 	if getIsMarsh(inst) == GROUND.MARSH then
 
 		if inst.CurrentTile == "Normal" then
-			inst.CurrentTile = "Swamp"
-			inst.components.talker:Say(GetString("wik", "ANNOUNCE_MARSH_AREA"))
+			if math.random(3) > 2.5 then
+				inst.CurrentTile = "Swamp"
+				inst.components.talker:Say(GetString("wik", "ANNOUNCE_MARSH_AREA"))
+			end
 		end
 		
 		-- Marsh Stats --
@@ -715,13 +717,13 @@ local function ontemperaturechange(inst, data)
 	inst.components.combat.damagemultiplier = (1 * CurrentAttack)
 
 	if inst.CurrentHunger == 'Full' then
-		local wikSize = 2 + (((inst.components.hunger.current - 200) / 100) * .3)
+		local wikSize = 1 + (((inst.components.hunger.current - 200) / 100) * .3)
 		inst.Transform:SetScale(wikSize, wikSize, wikSize, wikSize)				
 	elseif inst.CurrentHunger == 'Hungry' then
 		local wikSize = 0.9 + (inst.components.hunger.current / 1000) 
 		inst.Transform:SetScale(wikSize, wikSize, wikSize, wikSize)				
---	else
---		inst.Transform:SetScale(1, 1, 1, 1)				
+	else
+		inst.Transform:SetScale(1, 1, 1, 1) --I had this commented out earlier... Why?
 	end
 
 end
@@ -745,7 +747,18 @@ end
 
 -- WERELIZARD FUNCTIONS --
 
+
+local function lizardactionstring(inst, action) --having this here should be fine
+
+
+    return "Chomp"
+
+
+end
+
+--space
 local function LizardActionButton(inst)
+
 	local action_target = FindEntity(inst, 6, function(guy) return (guy.components.edible and inst.components.eater:CanEat(guy)) or
 		 													 (guy.components.workable and inst.components.worker:CanDoAction(guy.components.workable.action)) end)
 
@@ -756,7 +769,12 @@ local function LizardActionButton(inst)
 			return BufferedAction(inst, action_target, action_target.components.workable.action)
 		end
 	end
+
 end
+
+
+
+													 
 
 local function LizardLeftClickPicker(inst, target_ent, pos)
     if inst.components.combat:CanTarget(target_ent) then
@@ -876,7 +894,9 @@ local function onwikeat(inst, food)
     print ('HungerPercent',(inst.wikCurrentHunger / inst.components.hunger.max) * 100)
 
 	if (inst.wikCurrentHunger / inst.components.hunger.max) * 100  > 95 then
-		AlreadyFull = 0	
+		AlreadyFull = 0
+	elseif inst.WickzillaExpMulti > 1 then
+		AlreadyFull = inst.WickzillaExpMulti
     end
 
     if inst.level < 5 and food.name ~= 'Petals' then
@@ -886,23 +906,23 @@ local function onwikeat(inst, food)
 	-- Lizardness 70
     if food.name == 'Meaty Stew' then
 	    inst.exp = inst.exp + (40 * AlreadyFull)	
-		inst.components.lizardness:DoDelta(90)
+		inst.components.lizardness:DoDelta(70)
 		EatenMeat = true
 
 	-- Lizardness 40
     elseif food.name == 'Meat' then
 	    inst.exp = inst.exp + (5 * AlreadyFull)	
-		inst.components.lizardness:DoDelta(90)
+		inst.components.lizardness:DoDelta(40)
 		EatenMeat = true
 
 	-- Lizardness 35
     elseif food.name == 'Monster Meat' or food.name == 'Bacon and Eggs' or food.name == 'Honey Ham' or food.name == 'Turkey Dinner' or food.name == 'Monster Lasagna' then
     	if food.name == 'Monster Meat' then
-		    inst.exp = inst.exp + (300)	
+		    inst.exp = inst.exp + (3 * AlreadyFull)	
 		else					
-		    inst.exp = inst.exp + (250 * AlreadyFull)	
+		    inst.exp = inst.exp + (25 * AlreadyFull)	
 		end
-		inst.components.lizardness:DoDelta(95)
+		inst.components.lizardness:DoDelta(35)
 		EatenMeat = true
 		
 	-- Lizardness 30
@@ -916,7 +936,7 @@ local function onwikeat(inst, food)
 		else
 			inst.exp = inst.exp + (3 * AlreadyFull)
 		end	
-		inst.components.lizardness:DoDelta(90)
+		inst.components.lizardness:DoDelta(30)
 		EatenMeat = true
 
     -- Lizardness 20
@@ -934,9 +954,9 @@ local function onwikeat(inst, food)
     -- Lizardness 10
     elseif food.name == 'Cooked Meat' or food.name == 'Unagi' then
 		if food.name == 'Cooked Meat' then
-			inst.exp = inst.exp + (70 * AlreadyFull)
+			inst.exp = inst.exp + (7 * AlreadyFull)
 		else
-			inst.exp = inst.exp + (70 * AlreadyFull)
+			inst.exp = inst.exp + (10 * AlreadyFull)
 		end
 		inst.components.lizardness:DoDelta(10)
 		EatenMeat = true
@@ -950,9 +970,9 @@ local function onwikeat(inst, food)
 	-- Lizardness 7
     elseif food.name == 'Fried Drumstick' or food.name == 'Cooked Fish' or food.name == 'Cooked Batilisk Wing' or food.name == 'Cooked Eel' or food.name == 'Cooked Frog Legs' or food.name == 'Cooked Morsel' then
 		if food.name == 'Cooked Morsel' then
-			inst.exp = inst.exp + 300
+			inst.exp = inst.exp + (3 * AlreadyFull)
 		else
-			inst.exp = inst.exp + 200
+			inst.exp = inst.exp + (5 * AlreadyFull)
 		end
 		inst.components.lizardness:DoDelta(7)
 		EatenMeat = true
@@ -1022,8 +1042,6 @@ end
 
 
 local function lizardhurt(inst, delta)
-
-
     if delta < 0 then
         inst.sg:PushEvent("attacked")
         inst.components.lizardness:DoDelta(delta*.25)
@@ -1033,14 +1051,29 @@ local function lizardhurt(inst, delta)
             inst.HUD.bloodover:Flash()
         end
     end
-
-
 end
 
 
 local function SetHUDState(inst)
     if inst.HUD then
         if (inst.components.lizardness and inst.components.lizardness:IsLizard()) or inst.lizard == true then --inst:HasTag("beaver") then
+        --[[if inst.components.lizardness:IsLizard() and not inst.HUD.controls.lizardbadge then
+            inst.HUD.controls.lizardbadge = GetPlayer().HUD.controls.sidepanel:AddChild(LizardBadge(inst))
+            inst.HUD.controls.lizardbadge:SetPosition(0,-100,0)
+            inst.HUD.controls.lizardbadge:SetPercent(1)
+            
+            inst.HUD.controls.lizardbadge.inst:ListenForEvent("lizardnessdelta", function(_, data) 
+                inst.HUD.controls.lizardbadge:SetPercent(inst.components.lizardness:GetPercent(), inst.components.lizardness.max)
+                if not data.overtime then
+                    if data.newpercent > data.oldpercent then
+                        inst.HUD.controls.lizardbadge:PulseGreen()
+                        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
+                    elseif data.newpercent < data.oldpercent then
+                        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
+                        inst.HUD.controls.lizardbadge:PulseRed()
+                    end
+                end
+            end, inst)--]]
             inst.HUD.controls.crafttabs:Hide()
             inst.HUD.controls.inv:Hide()
             --inst.HUD.controls.status:Hide()
@@ -1055,16 +1088,25 @@ local function SetHUDState(inst)
             inst.HUD.lizardOL:SetHAnchor(ANCHOR_MIDDLE)
             inst.HUD.lizardOL:SetScaleMode(SCALEMODE_FILLSCREEN)
             inst.HUD.lizardOL:SetClickable(false)
-        else --if not inst.components.lizardness:IsLizard() then
+		
+        else --if not inst.components.lizardness:IsLizard() and inst.HUD.controls.lizardbadge then
+												 
+													
+												   
+			   
+
             if inst.HUD.lizardOL then
                 inst.HUD.lizardOL:Kill()
                 inst.HUD.lizardOL = nil
             end
+
             inst.HUD.controls.crafttabs:Show()
             inst.HUD.controls.inv:Show()
             inst.HUD.controls.status:Show()
             inst.HUD.controls.mapcontrols.minimapBtn:Show()
+
         end
+
     end
 end
 
@@ -1119,11 +1161,15 @@ function BecomeWik(inst)
     
     inst.lizard = false
     inst.ActionStringOverride = nil
- --[[   if inst.level > 5 then 
+    if inst.level > 5 then 
     	inst.components.eater:SetOmnivore()
+    	STRINGS.CHARACTERS.WIK = require "wikSpeech"
+
     else
     	inst.components.eater:SetVegetarian()
-    end--]]
+    	STRINGS.CHARACTERS.WIK = require "wikSpeechVeggie"
+
+    end
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wik_skinny")
     inst:SetStateGraph("SGwik")
@@ -1154,7 +1200,7 @@ function BecomeWik(inst)
     inst.components.playercontroller.actionbuttonoverride = nil
     inst.components.playeractionpicker.leftclickoverride = nil
     inst.components.playeractionpicker.rightclickoverride = nil
-    inst.components.eater:SetOmnivore()
+    --inst.components.eater:SetOmnivore()
 
     inst.components.eater.strongstomach = false
 
@@ -1324,6 +1370,8 @@ local inst = GetPlayer()
     inst.components.worker:SetAction(ACTIONS.HAMMER, 4)
 --Sets max values.
     inst.components.health.maxhealth = 2000
+													  
+
     inst.components.sanity:SetPercent(1)
     inst.components.health:SetPercent(1)
     inst.components.hunger:SetPercent(1)
@@ -1349,6 +1397,9 @@ local inst = GetPlayer()
 --Ambiance.
     inst.components.dynamicmusic:Disable()
 --Various HUD elements.
+																					
+																																 
+										   
     inst:DoTaskInTime(0, function() SetHUDState(inst) end)
     --inst:RemoveEventCallback("oneatsomething", onwikeat)
     --inst:ListenForEvent("oneatsomething", onlizardeat)
@@ -1370,7 +1421,7 @@ local inst = GetPlayer()
             inst.HUD.lizardOL:SetHAnchor(ANCHOR_MIDDLE)
             inst.HUD.lizardOL:SetScaleMode(SCALEMODE_FILLSCREEN)
             inst.HUD.lizardOL:SetClickable(false)--]]
---[[	if inst.WickzillaLoseExp then
+	if inst.WickzillaLoseExp then
 		if inst.WickzillaLevel ~= 0 then
 			if inst.WickzillaLevel < 0 then
 				inst.level = inst.level + inst.WickzillaLevel
@@ -1384,7 +1435,7 @@ local inst = GetPlayer()
 			inst.level = 0
 		end
 		inst.exp = 0
-	end --]]
+	end
 end
 
 function BecomeDeerclops()
@@ -1404,7 +1455,7 @@ local inst = GetPlayer()
 --The actual transformation.
     inst.AnimState:SetBuild("deerclops_build")
     inst.AnimState:SetBank("deerclops")
-    inst:SetStateGraph("SGdeerclopstemp")
+    inst:SetStateGraph("SGdeerclopsPlayer")
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1514,7 +1565,7 @@ if shallwalk == nil then shallwalk = 0 end
 	inst.SetStandState(inst, "BI")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 --Stategraph needs to come after all that junk.
-    inst:SetStateGraph("SGBeargertemp")
+    inst:SetStateGraph("SGBeargerPlayer")
 --Create waves when stomping through water.
 	if IsWorldWithWater() and inst.giantWaves then
 		inst.StompSplash = function(inst, speed, pound)
@@ -1633,7 +1684,7 @@ local inst = GetPlayer()
 --The actual transformation.
     inst.AnimState:SetBuild("goosemoose_build")
     inst.AnimState:SetBank("goosemoose")
-    inst:SetStateGraph("SGMooseGoosetemp")
+    inst:SetStateGraph("SGMooseGoosePlayer")
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1731,7 +1782,7 @@ local inst = GetPlayer()
 --The actual transformation.
     inst.AnimState:SetBuild("foot_build")
     inst.AnimState:SetBank("foot")
-    inst:SetStateGraph("SGbigfoottemp")
+    inst:SetStateGraph("SGbigfootPlayer")
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -2012,21 +2063,28 @@ end
 
 local start_inv = --inventory
 {
---	"fish",
-	"meat",
+	"fish",
+	"rabbit",
 }
+
 
 local fn = function(inst)
 
 	inst.level = 6
 	inst.WickzillaLevel = 0
 	inst.WickzillaLoseExp = true
+	inst.WickzillaExpMulti = 0
 	inst.wikColourSetting = "default"
 	inst.HasSaveData = false 
 
 	inst.exp = 0
 
     CreateNightvision(inst)
+							
+						   
+							 
+							   
+											 
 
 	local MaximumHealth = 150
 	local MaximumHunger = 0.5 -- 1 is Wilson's which is 150

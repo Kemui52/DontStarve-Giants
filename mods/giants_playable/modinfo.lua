@@ -1,8 +1,8 @@
--- v1.07
+-- v1.08
 
 -- This information tells other players more about the mod
 name = "Playable Giants"
-description = "\"This is monumental.\"\n\nBased off mods by Reislet and Bones, DarkXero, and ziyuan."
+description = "\"This is monumental.\"\n\nBased off mods by Sodasorbet, Bones, DarkXero, and ziyuan."
 --             Updated Mod character Wicked the Lizardman./n"
 author = "Kemui52"
 api_version = 6
@@ -24,20 +24,20 @@ configuration_options =
 {
 	{
 		name = "wikPlayIntro",
-		label = "Included",
+		label = "Play Intro",
 		options =	{
 						{description = "None", data="None"},
 						{description = "Wicked (default)", data="Wicked"},
 						{description = "Normal", data="Normal"},
 					},
 
-		default = 6,
+		default = "Wicked",
 	
 	},
 
 	{
 		name = "wikStartingLevel",
-		label = "for",
+		label = "Starting Level",
 		options =	{
 						{description = "0 (min)", data=0},
 						{description = "6 (default)", data=6},
@@ -59,14 +59,14 @@ configuration_options =
 	
 	{
 		name = "wikPostLevel",
-		label = "Compatibility",
+		label = "After Wickzilla Level",
 
 		options =	{
-						{description = "Down 10 Level", data=-10},
-						{description = "Down 5 Level", data=-5},
-						{description = "Down 3 Level", data=-3},
-						{description = "Down 1 Level", data=-1},		
-						{description = "0 (default)", data=0},
+						{description = "Down 10 levels", data=-10},
+						{description = "Down 5 levels", data=-5},
+						{description = "Down 3 levels (default)", data=-3},
+						{description = "Down 1 level", data=-1},		
+						{description = "0 (original)", data=0},
 						{description = "6", data=6},
 						{description = "10", data=10},
 						{description = "20", data=20},
@@ -80,13 +80,13 @@ configuration_options =
 						{description = "90 (max health)", data=90},
 					},
 
-		default = 0,
+		default = -3,
 	
 	},
 
 	{
 		name = "wikLoseExp",
-		label = "Got",
+		label = "Lose Level After Wickzilla?",
 		options =	{
 						{description = "Yes (default)", data = true},
 						{description = "No", data = false},
@@ -97,8 +97,22 @@ configuration_options =
 	},
 
 	{
+		name = "wikExpMulti",
+		label = "Exp gain from meat?",
+		options =	{
+						{description = "x1 (original)", data = 1},
+						{description = "x2", data = 2},
+						{description = "x3 (default)", data = 3},
+						{description = "x5", data = 5},
+					},
+
+		default = 3,
+	
+	},
+
+	{
 		name = "wikColour",
-		label = "That?",
+		label = "Skin Colour",
 		options =	{
 						{description = "Default", data = "default"},
 						{description = "Green", data = "green"},

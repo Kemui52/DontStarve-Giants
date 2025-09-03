@@ -1,6 +1,6 @@
 local Lizardness = Class(function(self, inst)
     self.inst = inst
-	self.max = 1
+	self.max = 100
     self.current = 0
     self.is_lizard = false
 end)
@@ -68,7 +68,21 @@ function Lizardness:DoDelta(delta, overtime)
     self.inst:PushEvent("lizardnessdelta", {oldpercent = oldpercent, newpercent = self.current/self.max, overtime = overtime})
         
         if self.is_lizard then 
-                GetWorld().components.colourcubemanager:SetOverrideColourCube(nil)
+--            if self.current > 50 then
+--                GetWorld().components.colourcubemanager:SetOverrideColourCube(nil)
+            if self.current > 50 then
+                GetWorld().components.colourcubemanager:SetOverrideColourCube(resolvefilepath "images/colour_cubes/lizard_vision_5_cc.tex")
+            elseif self.current > 40 then
+                GetWorld().components.colourcubemanager:SetOverrideColourCube(resolvefilepath "images/colour_cubes/lizard_vision_4_cc.tex")
+            elseif self.current > 30 then
+                GetWorld().components.colourcubemanager:SetOverrideColourCube(resolvefilepath "images/colour_cubes/lizard_vision_3_cc.tex")
+            elseif self.current > 20 then
+                GetWorld().components.colourcubemanager:SetOverrideColourCube(resolvefilepath "images/colour_cubes/lizard_vision_2_cc.tex")
+            elseif self.current > 10 then
+                GetWorld().components.colourcubemanager:SetOverrideColourCube(resolvefilepath "images/colour_cubes/lizard_vision_1_cc.tex")
+            else
+                GetWorld().components.colourcubemanager:SetOverrideColourCube(resolvefilepath "images/colour_cubes/lizard_vision_cc.tex")
+            end
         end
 
     --if delta ~= 0 then

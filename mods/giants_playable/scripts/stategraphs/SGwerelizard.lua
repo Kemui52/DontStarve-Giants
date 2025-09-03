@@ -37,6 +37,38 @@ end
 local states=
 {
     
+    State{
+        name = "towik",
+        tags = {"busy"},
+        onenter = function(inst)
+            inst.Physics:Stop()            
+            inst.AnimState:PlayAnimation("death")
+            inst.sg:SetTimeout(3)
+            --inst.SoundEmitter:PlaySound("dontstarve/characters/wik/death_lizard")
+            inst.components.lizardness.doing_transform = true
+        end,
+
+        timeline =
+        {
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:KillSound("lizardmusic") end)
+        },
+        
+        ontimeout = function(inst) 
+            TheFrontEnd:Fade(false,2)
+            inst:DoTaskInTime(2, function() 
+                
+                GetClock():MakeNextDay()
+                
+                inst.components.lizardness.makeperson(inst)
+                inst.components.sanity:SetPercent(.25)
+                inst.components.health:SetPercent(.33)
+                inst.components.hunger:SetPercent(.25)
+                inst.components.lizardness.doing_transform = false
+                inst.sg:GoToState("wakeup")
+                TheFrontEnd:Fade(true,1)
+            end)
+        end
+    },
 
     State{
         name = "transform_pst",

@@ -1494,7 +1494,7 @@ local states=
                 inst.SoundEmitter:PlaySound("dontstarve/characters/"..sound_name.."/talk_LP", "talk")
             end
 
-            inst.sg:SetTimeout(.45) -- 1.5 + math.random()*.5
+            inst.sg:SetTimeout(1) -- 0.45 + math.random()*.5
         end,
         
         ontimeout = function(inst)
@@ -2617,8 +2617,9 @@ local states=
         onenter = function(inst)
 			inst.components.lizardness.doing_transform = true
             inst.Physics:Stop() 
-            --inst.components.playercontroller:Enable(false)           
-            inst.components.health:SetInvincible(false)
+            inst.components.playercontroller:Enable(false) --was commented out
+            inst.AnimState:PlayAnimation("transform_pre")
+            inst.components.health:SetInvincible(true) --was false
         end,
         
         onexit = function(inst)
@@ -2634,6 +2635,7 @@ local states=
         {
             EventHandler("animover", function(inst)
 	            inst.components.lizardness.makelizard(inst)
+                inst.sg:GoToState("transform_pst") --was gone
             end ),
         } 
     },   
