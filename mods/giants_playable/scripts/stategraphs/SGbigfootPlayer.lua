@@ -66,9 +66,17 @@ local function DoStep(inst)
 	--local power = Lerp(3, 1, distToPlayer/180)
 	inst.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 1.7, 40) 
 	inst.components.groundpounder:GroundPound()
-	SpawnPrint(inst)
-	inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/foot_water")
---	inst.SoundEmitter:PlaySound(inst.altsound)
+	if GetWorld():HasTag("shipwrecked") or GetWorld():HasTag("porkland") then
+		if inst.GetIsOnWater(inst) then
+			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/foot_water")
+		else
+			SpawnPrint(inst)
+			inst.SoundEmitter:PlaySound(inst.altsound)
+		end
+	else
+		SpawnPrint(inst)
+		inst.SoundEmitter:PlaySound(inst.altsound)
+	end
 	GetWorld():PushEvent("bigfootstep") --Wakes up sleeping entities.
 end
 

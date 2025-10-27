@@ -5,8 +5,8 @@ BecomeDeerclops()
 BecomeBearger(shallwalk)	0 = run, 1 = stroll, 2 = walk
 	BeargerSpeed(speed)	change walk speed
 BecomeMooseGoose()		other variations like moose or goose work, too
-BecomeBigFoot(altsound)
-	BigFootSound()		toggle vanilla stomp sound or bearger slam sound
+BecomeBigFoot(altsound)		0 = vanilla stomp sound, 1 = bearger slam sound
+	BigFootSound()		toggle between footstep sounds
 
 
 
