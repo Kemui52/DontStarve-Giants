@@ -1173,6 +1173,7 @@ function BecomeWik(inst)
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wik_skinny")
     inst:SetStateGraph("SGwik")
+	inst.Transform:SetFourFaced()
 	inst.entity:AddMiniMapEntity():SetIcon( "wikmini.tex" )
     inst:RemoveTag("beaver")
 	inst:AddTag("merm")
@@ -1314,6 +1315,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("werelizard_build")
     inst.AnimState:SetBank("werelizard")
     inst:SetStateGraph("SGwerelizard")
+--Set up animation facing rules.
+	inst.Transform:SetFourFaced()
 --Do common setup.
 	GenericMonsterSetup(inst)
 	--inst:AddTag("monster")
@@ -1456,6 +1459,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("deerclops_build")
     inst.AnimState:SetBank("deerclops")
     inst:SetStateGraph("SGdeerclopsPlayer")
+--Set up animation facing rules.
+	inst.Transform:SetFourFaced()
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1540,6 +1545,8 @@ if shallwalk == nil then shallwalk = 0 end
     inst.AnimState:SetBuild("bearger_build")
     inst.AnimState:SetBank("bearger")
 	--Stategraph moved for Bearger.
+--Set up animation facing rules.
+	inst.Transform:SetFourFaced()
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1685,6 +1692,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("goosemoose_build")
     inst.AnimState:SetBank("goosemoose")
     inst:SetStateGraph("SGMooseGoosePlayer")
+--Set up animation facing rules.
+	inst.Transform:SetFourFaced()
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1783,6 +1792,8 @@ local inst = GetPlayer()
     inst.AnimState:SetBuild("foot_build")
     inst.AnimState:SetBank("foot")
     inst:SetStateGraph("SGbigfootPlayer")
+--Set up animation facing rules.
+	inst.Transform:SetFourFaced()
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1904,6 +1915,8 @@ local inst = GetPlayer()
 	end
     inst.AnimState:SetBank("leif")
     inst:SetStateGraph("SGleifPlayer")
+--Set up animation facing rules.
+	inst.Transform:SetFourFaced()
 --Do common setup.
 	GenericMonsterSetup(inst)
 --Remove text.
@@ -1964,6 +1977,110 @@ function BecomeLumpyTreeguard()
 	BecomeTreeguard(1)
 end
 
+function BecomeBirdFoot(altsound)
+if not CheckMonsterFile("anim/roc_leg.zip") then return end
+local inst = GetPlayer()
+--Sets up transformation flags.
+    inst.lizard = true
+    inst:AddTag("beaver")
+--Define size of creature.
+    inst.Transform:SetScale(1, 1, 1, 1)
+--Default camera in case it was changed.
+	TheCamera:SetDefault()
+--Set map icon.
+	inst.entity:AddMiniMapEntity():SetIcon( "wikmini.tex" )
+--The actual transformation.
+    inst.AnimState:SetBuild("roc_leg")
+    inst.AnimState:SetBank("foot") --Huh, so that's why...
+    inst:SetStateGraph("SGbirdfootPlayer")
+--Set up animation facing rules.
+	inst.Transform:SetSixFaced()
+--Do common setup.
+	GenericMonsterSetup(inst)
+--Remove text.
+    inst.components.talker:IgnoreAll()
+--General speed.
+    inst.components.locomotor.walkspeed = 7
+    --inst.components.locomotor.runspeed = 13
+    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+--Create waves when stomping through water.
+	if IsWorldWithWater() and inst.giantWaves then
+		inst.StompSplash = function(inst)
+			if inst.GetIsOnWater(inst) then
+				CustomWarWaves(inst, 14, 360, 6, nil, 2.0)
+			end
+		end
+	end
+--Remove collisions with objects and make heavy.
+	ChangeToBigFootPhysics(inst)
+	inst.Physics:SetMass(99999)
+--Mouseover string and action overrides.
+    inst.ActionStringOverride = dcattackactionstring
+    inst.components.playercontroller.actionbuttonoverride = DeerclopsActionButton
+    inst.components.playeractionpicker.leftclickoverride = RightClickPicker
+    inst.components.playeractionpicker.rightclickoverride = RightClickPicker
+--Timer used for nothing, for this creature.
+ --   inst:AddComponent("timer")
+--Used by some creatures to supplement their attack with destruction.
+--    inst.WorkEntities = function(inst) --bad, weird version I made???
+--        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/foot_ground")
+     --   GetPlayer().components.playercontroller:ShakeCamera(inst, "FULL", 0.5, 0.05, 1.4, 40)
+--    end
+--Blobby shadow size.
+    inst.DynamicShadow:SetSize(12, 12)
+--Alt stomp sound option.
+	if altsound == nil or altsound <= 0 then
+		inst.altsound = "dontstarve_DLC001/creatures/glommer/foot_ground"
+	else
+		inst.altsound = "dontstarve_DLC001/creatures/bearger/groundpound"
+	end
+--Special AoE attack effects.
+	if inst.components.groundpounder == nil then
+		inst:AddComponent("groundpounder")
+	end
+    inst.components.groundpounder.destroyer = false
+    inst.components.groundpounder.damageRings = 0
+    inst.components.groundpounder.destructionRings = 0
+    inst.components.groundpounder.numRings = 3
+--Generic combat stats.
+    inst.components.combat:SetDefaultDamage(1000)
+    inst.components.combat:SetAreaDamage(4, 1)
+    inst.components.combat:SetRange(4, 4)
+--Sets what you can click on and your effectiveness. Worker is always needed.
+    inst:AddComponent("worker")
+    --inst.components.worker:SetAction(ACTIONS.DIG, 1)
+	--inst.components.worker:SetAction(ACTIONS.CHOP, 4)
+    --inst.components.worker:SetAction(ACTIONS.MINE, 1)
+    --inst.components.worker:SetAction(ACTIONS.HAMMER, 4)
+--Sets max values.
+    inst.components.health.maxhealth = 2000
+    inst.components.sanity:SetPercent(1)
+    inst.components.health:SetPercent(1)
+    inst.components.hunger:SetPercent(1)
+--Sets a safe temperature.
+    inst.components.temperature:SetTemp(30)
+--Invulnerabilities.
+	inst.components.health.invincible = true
+    inst.components.hunger:Pause()
+    inst.components.sanity.ignore = true
+--Set waterproof since rain does nothing anyway. The only reason this works on the entity directly is because I patched it in modmain.
+	if softresolvefilepath("scripts/components/waterproofer.lua") then --vanilla compatibility
+		inst:AddComponent("waterproofer")
+	end
+--Just in case...
+    inst.components.eater.strongstomach = true
+    inst.components.eater.monsterimmune = true
+--Nightvision.
+	if not inst.Light then
+		CreateNightvision(inst)
+	end
+    inst.Light:Enable(true)
+--Ambiance.
+    inst.components.dynamicmusic:Disable()
+--Various HUD elements.
+    inst:DoTaskInTime(0, function() SetHUDState(inst) end)
+end
+
 function mon(who, option)
 	local TransformFunctions =
 	{
@@ -1973,6 +2090,7 @@ function mon(who, option)
 		function() BecomeBearger(option) end,
 		function() BecomeMooseGoose() end,
 		function() BecomeBigFoot(option) end,
+		function() BecomeBirdFoot(option) end,
 	}
 
 	if who <= -1 then
@@ -1981,7 +2099,7 @@ function mon(who, option)
 		TransformFunctions[who]()
 	else
 		print("WARNING - Provided monster index too high. Max is "..#TransformFunctions..".")
-		print("Becoming BigFoot.")
+		print("Becoming BirdFoot.")
 		TransformFunctions[#TransformFunctions]()
 	end
 

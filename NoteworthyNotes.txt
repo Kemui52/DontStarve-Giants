@@ -1,6 +1,6 @@
 BecomeLizard()			werelizard from wicked mod
-BecomeTreeguard(type)
-BecomeLumpyTreeguard()
+BecomeTreeguard(type)		0 = regular, 1 = lumpy
+				or, use BecomeLumpyTreeguard()
 BecomeDeerclops()	
 BecomeBearger(shallwalk)	0 = run, 1 = stroll, 2 = walk
 	BeargerSpeed(speed)	change walk speed
@@ -18,3 +18,5 @@ Get entity name under cursor
 print(tostring(c_select()))
 
 
+bigfoot footprint fix cave depth
+tallbird nest make destroyable

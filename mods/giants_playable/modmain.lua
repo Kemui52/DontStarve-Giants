@@ -17,6 +17,8 @@ PrefabFiles = {
     "cageobstacle.lua",
     "wikthought.lua",
 
+    "rocfootprint.lua",
+
 --	"deerclops_item",
 }
 
