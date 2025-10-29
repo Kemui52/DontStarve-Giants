@@ -1,12 +1,14 @@
-require "stategraphs/SGbigfoot"
-
-local assets = 
+--require "stategraphs/SGbigfoot"
+local assets = {}
+if softresolvefilepath("anim/roc_foot_print.zip") then
+assets = 
 {
 --	Asset("ANIM", "anim/foot_build.zip"),
 --	Asset("ANIM", "anim/foot_basic.zip"),
 	Asset("ANIM", "anim/roc_foot_print.zip"),
 --	Asset("ANIM", "anim/foot_shadow.zip"),
 }
+end
 
 local prefabs = 
 {
