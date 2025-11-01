@@ -6,6 +6,7 @@ BecomeBearger(shallwalk)	0 = run, 1 = stroll, 2 = walk
 	BeargerSpeed(speed)	change walk speed
 BecomeMooseGoose()		other variations like moose or goose work, too
 BecomeBigFoot(altsound)		0 = vanilla stomp sound, 1 = bearger slam sound
+BecomeBirdFoot(altsound)	same as ^
 	BigFootSound()		toggle between footstep sounds
 
 
@@ -18,5 +19,4 @@ Get entity name under cursor
 print(tostring(c_select()))
 
 
-bigfoot footprint fix cave depth
-tallbird nest make destroyable
+

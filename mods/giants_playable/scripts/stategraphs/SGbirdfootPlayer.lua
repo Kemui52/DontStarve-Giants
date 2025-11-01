@@ -196,7 +196,7 @@ local states=
 		tags = {"busy", "STOPFUCKINGMOVING"},
 
 		onenter = function(inst)
-			inst.AnimState:PlayAnimation("stomp_pst")
+			inst.AnimState:PlayAnimation("stomp_loop")
 		end,
 
 		onexit = function(inst)
@@ -208,6 +208,7 @@ local states=
 			EventHandler("animover", function(inst)
 				inst.sg:GoToState("idle_move")
 				stompstarttime = GetTime()
+
 			end),
 			EventHandler("locomote", function(inst)
 				if inst.components.locomotor:WantsToMoveForward() then
@@ -219,6 +220,7 @@ local states=
 		timeline =
 		{
 			TimeEvent(23*FRAMES, function(inst)
+				inst.AnimState:PlayAnimation("stomp_pst")
 				inst.sg:RemoveStateTag("busy")
 				inst.sg:AddStateTag("canrotate")
 				inst.sg:AddStateTag("moving")

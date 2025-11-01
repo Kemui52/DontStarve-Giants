@@ -761,6 +761,19 @@ local function wikreeds(inst)
     inst.components.workable:SetOnFinishCallback(fnCrushed)
     inst.components.workable:SetWorkLeft(1)
 end
+local function wiktallbirdnest(inst)
+	local function fnCrushed(inst, chopper)
+		if inst.components.pickable:CanBePicked() then
+			inst.components.lootdropper:SpawnLootPrefab("tallbirdegg_cooked")
+		end
+		inst.components.lootdropper:SpawnLootPrefab("cutgrass")
+		inst:Remove()
+	end
+	inst:AddComponent("lootdropper")
+	inst:AddComponent("workable")
+    inst.components.workable:SetOnFinishCallback(fnCrushed)
+    inst.components.workable:SetWorkLeft(1)
+end
 local function wikbirds(inst)
 	local brain = require "brains/wikbirdbrain"
 	inst:SetBrain(brain)
@@ -1029,6 +1042,7 @@ AddPrefabPostInit("flower_cave_double", wikflowercavedouble)
 AddPrefabPostInit("flower_cave_triple", wikflowercavetriple)
 AddPrefabPostInit("gravestone", wikgravestone)
 AddPrefabPostInit("reeds", wikreeds)
+AddPrefabPostInit("tallbirdnest", wiktallbirdnest)
 AddPrefabPostInit("crow", wikbirds)
 AddPrefabPostInit("robin", wikbirds)
 AddPrefabPostInit("robin_winter", wikbirds)

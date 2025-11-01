@@ -27,15 +27,24 @@ local function roc_footprint_fn()
 	anim:PlayAnimation("idle")
 	anim:SetOrientation( ANIM_ORIENTATION.OnGround )
 	anim:SetLayer( LAYER_BACKGROUND )
-	anim:SetSortOrder( 3 )
+	anim:SetSortOrder( 4 )
 	trans:SetRotation( 0 )
 
 	inst:AddTag("scarytoprey")
 
 	inst:AddComponent("colourtweener")
-	inst.components.colourtweener:StartTween({0,0,0,0}, 15, function(inst) inst:Remove() end)
+	--inst.components.colourtweener:StartTween({0,0,0,0}, 15, function(inst) inst:Remove() end)
 
 	inst.persists = false
+
+	inst.components.colourtweener:StartTween({1,1,1,1}, 1, function(inst)  end)
+	inst:AddComponent("timer")
+	inst.components.timer:StartTimer("bigfootprefade", 30, false)
+	inst:ListenForEvent("timerdone", function(inst, data)
+					if data.name == "bigfootprefade" then
+						inst.components.colourtweener:StartTween({0,0,0,0}, 25, function(inst) inst:Remove() end)
+					end
+				end)
 
 	return inst
 end

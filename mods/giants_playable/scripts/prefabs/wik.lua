@@ -2080,6 +2080,9 @@ local inst = GetPlayer()
 --Various HUD elements.
     inst:DoTaskInTime(0, function() SetHUDState(inst) end)
 end
+function BirdFootSound()
+	BigFootSound()
+end
 
 function mon(who, option)
 	local TransformFunctions =
